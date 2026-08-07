@@ -69,6 +69,10 @@ $default_cta   = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );
 							<div class="wah-card-image">
 								<img src="<?php echo esc_url( $art['featured_image'] ); ?>" alt="<?php echo esc_attr( $art['title'] ); ?>" loading="lazy" />
 							</div>
+						<?php else : ?>
+							<div class="wah-card-banner-fallback" style="background: linear-gradient(135deg, <?php echo $brand_col; ?> 0%, #0f172a 100%);">
+								<span>⚡ <?php echo $prov_name; ?></span>
+							</div>
 						<?php endif; ?>
 
 						<div class="wah-card-body">
@@ -85,7 +89,7 @@ $default_cta   = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );
 							</a>
 							<?php if ( ! empty( $wa_target ) ) : ?>
 								<a href="https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $wa_target ) ); ?>?text=Halo%20saya%20tertarik%20pasang%20wifi%20<?php echo urlencode( $prov_name ); ?>" target="_blank" rel="nofollow noopener" class="wah-btn wah-btn-whatsapp" data-article-id="<?php echo esc_attr( $art['id'] ); ?>">
-									💬 WhatsApp
+									💬 Chat WhatsApp Direct
 								</a>
 							<?php endif; ?>
 						</div>
