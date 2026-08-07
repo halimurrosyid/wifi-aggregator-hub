@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.15 =
+* Feature: Kolom Statistik Posting per Provider di Provider Manager (Menambahkan kolom 'Jumlah Posting Terindeks' dan tombol pratinjau halaman per provider ISP).
+
 = 1.0.14 =
-* Feature: Ultra-Fast Chunked Batch Database Insertion & Memory Map Sync (Meningkatkan kecepatan sinkronisasi hingga 100x lipat dan menghilangkan kendala timeout PHP saat menyedot 7,000+ artikel dari seluruh sub-sitemap Yoast/RankMath).
+* Feature: Ultra-Fast Chunked Batch Database Insertion & Memory Map Sync.
 
 = 1.0.13 =
 * Feature: Dynamic SEO Meta Pattern Integration.
