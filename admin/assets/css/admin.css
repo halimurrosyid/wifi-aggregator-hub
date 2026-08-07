@@ -58,15 +58,17 @@
 	line-height: 1.5;
 }
 
-/* Stats Grid */
-.wah-stats-grid {
+/* Stats Grid & Metrics Cards */
+.wah-stats-grid,
+.wah-metrics-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 	gap: 16px;
-	margin-bottom: 28px;
+	margin-bottom: 24px;
 }
 
-.wah-stat-card {
+.wah-stat-card,
+.wah-metric-card {
 	background: #ffffff;
 	border-radius: 12px;
 	padding: 20px;
@@ -74,29 +76,54 @@
 	align-items: center;
 	gap: 16px;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-	border: 1px solid #f1f5f9;
+	border: 1px solid #e2e8f0;
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.wah-stat-card:hover {
+.wah-stat-card:hover,
+.wah-metric-card:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
-.wah-stat-card .stat-icon {
-	width: 46px;
-	height: 46px;
-	border-radius: 10px;
+.wah-stat-card .stat-icon,
+.wah-metric-icon {
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
 }
 
-.wah-stat-card .stat-icon .dashicons {
+.wah-stat-card .stat-icon .dashicons,
+.wah-metric-icon .dashicons {
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+}
+
+.wah-metric-info,
+.stat-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.wah-metric-value,
+.stat-value {
 	font-size: 22px;
-	width: 22px;
-	height: 22px;
+	font-weight: 800;
+	color: #0f172a;
+	line-height: 1.2;
+}
+
+.wah-metric-label,
+.stat-label {
+	font-size: 13px;
+	font-weight: 600;
+	color: #64748b;
+	margin-top: 2px;
 }
 
 .wah-stat-card.primary .stat-icon { background: #e0f2fe; color: #0284c7; }

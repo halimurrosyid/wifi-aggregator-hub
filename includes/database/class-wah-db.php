@@ -455,7 +455,8 @@ class WAH_DB {
 		$t_areas    = $wpdb->prefix . 'wah_areas';
 
 		$total_feeds     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_feeds" );
-		$total_articles  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles WHERE status = 'active'" );
+		$total_articles  = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles" );
+		$active_articles = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles WHERE status = 'active'" );
 		$total_new_24h   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)" );
 		$total_duplicate = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles WHERE status = 'duplicate'" );
 		$total_broken    = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $t_articles WHERE status = 'broken' OR http_status = '404'" );
@@ -466,6 +467,7 @@ class WAH_DB {
 		return array(
 			'total_feeds'     => $total_feeds,
 			'total_articles'  => $total_articles,
+			'active_articles' => $active_articles,
 			'total_new_24h'   => $total_new_24h,
 			'total_duplicate' => $total_duplicate,
 			'total_broken'    => $total_broken,

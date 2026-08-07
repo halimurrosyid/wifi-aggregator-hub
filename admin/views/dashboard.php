@@ -22,7 +22,6 @@ $articles = $db->get_articles(
 	array(
 		'limit'  => $per_page,
 		'offset' => $offset,
-		'status' => 'active',
 	)
 );
 
@@ -32,7 +31,7 @@ $provider_stats    = array();
 $total_art_for_pct = max( 1, $total_articles_count );
 
 foreach ( $providers as $prov ) {
-	$count = count( $db->get_articles( array( 'provider_id' => $prov['id'], 'status' => 'active' ) ) );
+	$count = count( $db->get_articles( array( 'provider_id' => $prov['id'] ) ) );
 	if ( $count > 0 ) {
 		$provider_stats[] = array(
 			'name'       => $prov['name'],
@@ -46,41 +45,45 @@ foreach ( $providers as $prov ) {
 <div class="wrap wah-admin-wrap">
 	<h1 class="wah-title"><span class="dashicons dashicons-dashboard"></span> WiFi Aggregator Hub - Dashboard & Analitik</h1>
 
-	<!-- Top Metric Cards Grid -->
-	<div class="wah-metrics-grid">
-		<div class="wah-metric-card">
-			<div class="wah-metric-icon" style="background:#e0f2fe; color:#0284c7;"><span class="dashicons dashicons-rss"></span></div>
+	<!-- Top Metric Cards Grid (5-column sleek widget layout) -->
+	<div class="wah-metrics-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
+		<div class="wah-metric-card" style="background:#fff; border-radius:12px; padding:18px; display:flex; align-items:center; gap:16px; border:1px solid #e2e8f0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+			<div class="wah-metric-icon" style="background:#e0f2fe; color:#0284c7; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="dashicons dashicons-rss" style="font-size:24px; width:24px; height:24px;"></span></div>
 			<div class="wah-metric-info">
-				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_feeds'] ); ?></span>
-				<span class="wah-metric-label">Total Feed Sources</span>
+				<span class="wah-metric-value" style="font-size:22px; font-weight:800; color:#0f172a;"><?php echo esc_html( $metrics['total_feeds'] ); ?></span>
+				<span class="wah-metric-label" style="font-size:13px; font-weight:600; color:#64748b;">Total Feed Sources</span>
 			</div>
 		</div>
-		<div class="wah-metric-card">
-			<div class="wah-metric-icon" style="background:#dcfce7; color:#16a34a;"><span class="dashicons dashicons-admin-post"></span></div>
+
+		<div class="wah-metric-card" style="background:#fff; border-radius:12px; padding:18px; display:flex; align-items:center; gap:16px; border:1px solid #e2e8f0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+			<div class="wah-metric-icon" style="background:#dcfce7; color:#16a34a; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="dashicons dashicons-admin-post" style="font-size:24px; width:24px; height:24px;"></span></div>
 			<div class="wah-metric-info">
-				<span class="wah-metric-value"><?php echo esc_html( number_format( $metrics['total_articles'] ) ); ?></span>
-				<span class="wah-metric-label">Artikel Terindeks</span>
+				<span class="wah-metric-value" style="font-size:22px; font-weight:800; color:#0f172a;"><?php echo esc_html( number_format( $metrics['total_articles'] ) ); ?></span>
+				<span class="wah-metric-label" style="font-size:13px; font-weight:600; color:#64748b;">Total Artikel Database</span>
 			</div>
 		</div>
-		<div class="wah-metric-card">
-			<div class="wah-metric-icon" style="background:#f3e8ff; color:#9333ea;"><span class="dashicons dashicons-category"></span></div>
+
+		<div class="wah-metric-card" style="background:#fff; border-radius:12px; padding:18px; display:flex; align-items:center; gap:16px; border:1px solid #e2e8f0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+			<div class="wah-metric-icon" style="background:#f3e8ff; color:#9333ea; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="dashicons dashicons-category" style="font-size:24px; width:24px; height:24px;"></span></div>
 			<div class="wah-metric-info">
-				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_providers'] ); ?></span>
-				<span class="wah-metric-label">Provider ISP</span>
+				<span class="wah-metric-value" style="font-size:22px; font-weight:800; color:#0f172a;"><?php echo esc_html( $metrics['total_providers'] ); ?></span>
+				<span class="wah-metric-label" style="font-size:13px; font-weight:600; color:#64748b;">Provider ISP</span>
 			</div>
 		</div>
-		<div class="wah-metric-card">
-			<div class="wah-metric-icon" style="background:#fef3c7; color:#d97706;"><span class="dashicons dashicons-location"></span></div>
+
+		<div class="wah-metric-card" style="background:#fff; border-radius:12px; padding:18px; display:flex; align-items:center; gap:16px; border:1px solid #e2e8f0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+			<div class="wah-metric-icon" style="background:#fef3c7; color:#d97706; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="dashicons dashicons-location" style="font-size:24px; width:24px; height:24px;"></span></div>
 			<div class="wah-metric-info">
-				<span class="wah-metric-value"><?php echo esc_html( count( $db->get_active_landing_areas() ) ); ?></span>
-				<span class="wah-metric-label">Wilayah Aktif Terisi</span>
+				<span class="wah-metric-value" style="font-size:22px; font-weight:800; color:#0f172a;"><?php echo esc_html( count( $db->get_active_landing_areas() ) ); ?></span>
+				<span class="wah-metric-label" style="font-size:13px; font-weight:600; color:#64748b;">Wilayah Aktif Terisi</span>
 			</div>
 		</div>
-		<div class="wah-metric-card">
-			<div class="wah-metric-icon" style="background:#e0e7ff; color:#4f46e5;"><span class="dashicons dashicons-clock"></span></div>
+
+		<div class="wah-metric-card" style="background:#fff; border-radius:12px; padding:18px; display:flex; align-items:center; gap:16px; border:1px solid #e2e8f0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+			<div class="wah-metric-icon" style="background:#e0e7ff; color:#4f46e5; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="dashicons dashicons-clock" style="font-size:24px; width:24px; height:24px;"></span></div>
 			<div class="wah-metric-info">
-				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_new_24h'] ); ?></span>
-				<span class="wah-metric-label">Artikel Baru (24j)</span>
+				<span class="wah-metric-value" style="font-size:22px; font-weight:800; color:#0f172a;"><?php echo esc_html( number_format( $metrics['total_new_24h'] ) ); ?></span>
+				<span class="wah-metric-label" style="font-size:13px; font-weight:600; color:#64748b;">Artikel Baru (24j)</span>
 			</div>
 		</div>
 	</div>
@@ -99,7 +102,7 @@ foreach ( $providers as $prov ) {
 					<div style="margin-bottom:12px;">
 						<div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
 							<span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:<?php echo esc_attr( $stat['color'] ); ?>; margin-right:6px;"></span><?php echo esc_html( $stat['name'] ); ?></span>
-							<span><?php echo esc_html( $stat['count'] ); ?> artikel (<?php echo esc_html( $stat['percentage'] ); ?>%)</span>
+							<span><?php echo esc_html( number_format( $stat['count'] ) ); ?> artikel (<?php echo esc_html( $stat['percentage'] ); ?>%)</span>
 						</div>
 						<div style="background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden;">
 							<div style="background:<?php echo esc_attr( $stat['color'] ); ?>; width:<?php echo esc_attr( $stat['percentage'] ); ?>%; height:100%;"></div>
@@ -196,7 +199,7 @@ foreach ( $providers as $prov ) {
 		<?php if ( $total_pages > 1 ) : ?>
 			<div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:10px; border-top:1px solid #e2e8f0;">
 				<div style="font-size:13px; color:#64748b;">
-					Menampilkan artikel <strong><?php echo esc_html( $offset + 1 ); ?></strong> - <strong><?php echo esc_html( min( $total_articles_count, $offset + $per_page ) ); ?></strong> dari total <strong><?php echo esc_html( $total_articles_count ); ?></strong>
+					Menampilkan artikel <strong><?php echo esc_html( $offset + 1 ); ?></strong> - <strong><?php echo esc_html( min( $total_articles_count, $offset + $per_page ) ); ?></strong> dari total <strong><?php echo esc_html( number_format( $total_articles_count ) ); ?></strong>
 				</div>
 				<div style="display:flex; gap:5px;">
 					<?php if ( $current_page > 1 ) : ?>
