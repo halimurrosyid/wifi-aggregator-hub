@@ -81,17 +81,26 @@ $default_cta   = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );
 						</div>
 
 						<div class="wah-card-actions">
-							<a href="<?php echo esc_url( $art['url'] ); ?>" target="_blank" rel="nofollow noopener" class="wah-btn wah-btn-outline" data-article-id="<?php echo esc_attr( $art['id'] ); ?>">
-								Lihat Detail &rarr;
+							<?php
+							// Custom CTA Link Resolution
+							$global_wa  = get_option( 'wah_default_wa_number', '' );
+							$custom_url = get_option( 'wah_custom_cta_url', '' );
+							$cta_label  = get_option( 'wah_default_cta_text', '💬 Chat WhatsApp Direct' );
+							$target_wa  = ! empty( $art['whatsapp_number'] ) ? $art['whatsapp_number'] : $global_wa;
+
+							if ( ! empty( $custom_url ) ) {
+								$final_link = $custom_url;
+							} elseif ( ! empty( $target_wa ) ) {
+								$wa_num_clean = preg_replace( '/[^0-9]/', '', $target_wa );
+								$wa_text      = urlencode( 'Halo, saya tertarik pasang paket WiFi ' . $prov_name );
+								$final_link   = 'https://wa.me/' . $wa_num_clean . '?text=' . $wa_text;
+							} else {
+								$final_link = 'https://wa.me/?text=' . urlencode( 'Halo, saya mau pesan paket WiFi ' . $prov_name );
+							}
+							?>
+							<a href="<?php echo esc_url( $final_link ); ?>" target="_blank" rel="nofollow noopener" class="wah-btn wah-btn-primary" style="background-color: <?php echo esc_attr( $brand_col ); ?>; width:100%; text-align:center; justify-content:center; font-weight:700; font-size:15px; padding:12px 18px; border-radius:8px; display:inline-flex; align-items:center; gap:8px;" data-article-id="<?php echo esc_attr( $art['id'] ); ?>">
+								<?php echo esc_html( $cta_label ); ?>
 							</a>
-							<a href="<?php echo esc_url( $art['url'] ); ?>" target="_blank" rel="nofollow noopener" class="wah-btn wah-btn-primary" style="background-color: <?php echo $brand_col; ?>;" data-article-id="<?php echo esc_attr( $art['id'] ); ?>">
-								<?php echo esc_html( $default_cta ); ?>
-							</a>
-							<?php if ( ! empty( $wa_target ) ) : ?>
-								<a href="https://wa.me/<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $wa_target ) ); ?>?text=Halo%20saya%20tertarik%20pasang%20wifi%20<?php echo urlencode( $prov_name ); ?>" target="_blank" rel="nofollow noopener" class="wah-btn wah-btn-whatsapp" data-article-id="<?php echo esc_attr( $art['id'] ); ?>">
-									💬 Chat WhatsApp Direct
-								</a>
-							<?php endif; ?>
 						</div>
 					</article>
 				<?php endforeach; ?>
