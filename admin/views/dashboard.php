@@ -99,5 +99,58 @@ $cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', 
 				<p class="wah-progress-text">Memproses sinkronisasi feed data...</p>
 			</div>
 		</div>
+	<!-- Recent Indexed Articles Table -->
+	<div class="wah-card-panel margin-top-20">
+		<div class="wah-panel-header">
+			<h3><span class="dashicons dashicons-admin-post"></span> Daftar Artikel Terindeks (10 Terbaru)</h3>
+		</div>
+		<table class="widefat fixed striped">
+			<thead>
+				<tr>
+					<th>Judul Artikel & Link Asli</th>
+					<th>Provider ISP</th>
+					<th>Wilayah / Kota</th>
+					<th>Domain Sumber</th>
+					<th>Status</th>
+					<th>Tanggal Index</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$recent_articles = $db->get_articles( array( 'limit' => 10 ) );
+				if ( empty( $recent_articles ) ) :
+				?>
+					<tr><td colspan="6">Belum ada artikel terindeks. Silakan tambahkan feed lalu klik Sync.</td></tr>
+				<?php else : foreach ( $recent_articles as $art ) :
+					$prov = $art['provider_id'] ? $db->get_provider( $art['provider_id'] ) : null;
+					$area = $art['area_id'] ? $db->get_area( $art['area_id'] ) : null;
+				?>
+					<tr>
+						<td>
+							<strong><a href="<?php echo esc_url( $art['url'] ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $art['title'] ); ?> &rarr;</a></strong>
+						</td>
+						<td>
+							<?php if ( $prov ) : ?>
+								<span class="wah-badge info" style="background-color: <?php echo esc_attr( $prov['brand_color'] ); ?>15; color: <?php echo esc_attr( $prov['brand_color'] ); ?>; border: 1px solid <?php echo esc_attr( $prov['brand_color'] ); ?>;">
+									<?php echo esc_html( $prov['name'] ); ?>
+								</span>
+							<?php else : ?>
+								<span class="wah-badge disabled">Unassigned</span>
+							<?php endif; ?>
+						</td>
+						<td>
+							<?php if ( $area ) : ?>
+								<span class="wah-badge active">📍 <?php echo esc_html( $area['name'] ); ?></span>
+							<?php else : ?>
+								<span class="wah-badge disabled">Umum / Semua Kota</span>
+							<?php endif; ?>
+						</td>
+						<td><code><?php echo esc_html( $art['website_name'] ? $art['website_name'] : $art['domain'] ); ?></code></td>
+						<td><span class="wah-badge <?php echo esc_attr( $art['status'] ); ?>"><?php echo esc_html( ucfirst( $art['status'] ) ); ?></span></td>
+						<td><small><?php echo esc_html( date( 'd M Y H:i', strtotime( $art['created_at'] ) ) ); ?></small></td>
+					</tr>
+				<?php endforeach; endif; ?>
+			</tbody>
+		</table>
 	</div>
 </div>

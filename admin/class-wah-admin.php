@@ -197,7 +197,8 @@ class WAH_Admin {
 			if ( is_wp_error( $res ) ) {
 				wp_send_json_error( $res->get_error_message() );
 			}
-			wp_send_json_success( "Sync feed ID $feed_id berhasil. Artikel baru: {$res['new']}, diperbarui: {$res['updated']}" );
+			$total = $res['new'] + $res['updated'];
+			wp_send_json_success( "Sync feed ID $feed_id BERHASIL! Total $total artikel terindeks ($total berhasil diproses ke database)." );
 		} else {
 			$res = WAH_Synchronizer::sync_all();
 			wp_send_json_success( $res['message'] );
