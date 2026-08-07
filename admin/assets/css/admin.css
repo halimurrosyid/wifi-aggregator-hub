@@ -171,9 +171,10 @@
 	margin: 0;
 }
 
-/* Form Layout Fixes */
+/* Form Layout & High-Specificity Input Width Fixes */
 .wah-form-group {
 	margin-bottom: 18px;
+	width: 100%;
 }
 
 .wah-form-group label {
@@ -184,14 +185,27 @@
 	margin-bottom: 6px;
 }
 
-.wah-form-group input[type="text"],
-.wah-form-group input[type="url"],
-.wah-form-group input[type="number"],
-.wah-form-group input[type="email"],
-.wah-form-group select,
-.wah-form-group textarea {
+/* High Specificity to override WordPress core .regular-text, .large-text, and 25em fixed width */
+.wah-admin-wrap input.regular-text,
+.wah-admin-wrap input.large-text,
+.wah-admin-wrap input.small-text,
+.wah-admin-wrap textarea.regular-text,
+.wah-admin-wrap textarea.large-text,
+.wah-admin-wrap .wah-form-group input[type="text"],
+.wah-admin-wrap .wah-form-group input[type="url"],
+.wah-admin-wrap .wah-form-group input[type="number"],
+.wah-admin-wrap .wah-form-group input[type="email"],
+.wah-admin-wrap .wah-form-group input[type="search"],
+.wah-admin-wrap .wah-form-group select,
+.wah-admin-wrap .wah-form-group textarea,
+.wah-card-panel input[type="text"],
+.wah-card-panel input[type="url"],
+.wah-card-panel input[type="number"],
+.wah-card-panel select,
+.wah-card-panel textarea {
 	width: 100% !important;
 	max-width: 100% !important;
+	min-width: 0 !important;
 	box-sizing: border-box !important;
 	padding: 10px 14px !important;
 	height: auto !important;
@@ -203,11 +217,12 @@
 	color: #0f172a !important;
 	transition: all 0.2s ease !important;
 	box-shadow: none !important;
+	display: block !important;
 }
 
-.wah-form-group input:focus,
-.wah-form-group select:focus,
-.wah-form-group textarea:focus {
+.wah-admin-wrap input:focus,
+.wah-admin-wrap select:focus,
+.wah-admin-wrap textarea:focus {
 	border-color: #0284c7 !important;
 	background-color: #ffffff !important;
 	box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
