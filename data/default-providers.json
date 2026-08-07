@@ -1,0 +1,58 @@
+[
+  {
+    "name": "ICONNET",
+    "slug": "iconnet",
+    "aliases": ["Iconnet", "Icon Plus", "PLN Icon Plus", "Iconnet PLN", "PLN Fiber"],
+    "brand_color": "#00A896",
+    "display_order": 1
+  },
+  {
+    "name": "Indosat HiFi",
+    "slug": "indosat-hifi",
+    "aliases": ["Indosat HiFi", "HIFI", "Indosat Fiber", "HiFi", "Indosat Gig"],
+    "brand_color": "#FFC107",
+    "display_order": 2
+  },
+  {
+    "name": "CBN Fiber",
+    "slug": "cbn-fiber",
+    "aliases": ["CBN", "CBN Fiber", "Cyberindo Adhitama", "CBN Direct"],
+    "brand_color": "#E63946",
+    "display_order": 3
+  },
+  {
+    "name": "Biznet",
+    "slug": "biznet",
+    "aliases": ["Biznet", "Biznet Home", "Biznet Networks", "Biznet Fiber"],
+    "brand_color": "#1D3557",
+    "display_order": 4
+  },
+  {
+    "name": "MyRepublic",
+    "slug": "myrepublic",
+    "aliases": ["MyRepublic", "My Republic", "MyRep", "MyRepublic Fiber"],
+    "brand_color": "#7B2CBF",
+    "display_order": 5
+  },
+  {
+    "name": "LinkNet",
+    "slug": "linknet",
+    "aliases": ["LinkNet", "Link Net", "First Media", "Linknet Fiber"],
+    "brand_color": "#0077B6",
+    "display_order": 6
+  },
+  {
+    "name": "Telkomsel One",
+    "slug": "telkomsel-one",
+    "aliases": ["Telkomsel One", "IndiHome", "Telkomsel Fiber", "Tsel One"],
+    "brand_color": "#ED1C24",
+    "display_order": 7
+  },
+  {
+    "name": "XL Satu",
+    "slug": "xl-satu",
+    "aliases": ["XL Satu", "XL Home", "XL Axiata Fiber", "XL Satu Fiber"],
+    "brand_color": "#002B49",
+    "display_order": 8
+  }
+]

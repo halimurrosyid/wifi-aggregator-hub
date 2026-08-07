@@ -1,0 +1,149 @@
+[
+  {
+    "name": "Kota Bandung",
+    "type": "city",
+    "province": "Jawa Barat",
+    "slug": "bandung",
+    "aliases": ["Bandung", "Kota Bandung", "Bandung City"]
+  },
+  {
+    "name": "Kabupaten Bandung",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "kab-bandung",
+    "aliases": ["Kab Bandung", "Kabupaten Bandung", "Bandung Regency", "Bandung Selatan"]
+  },
+  {
+    "name": "Kabupaten Bandung Barat",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "bandung-barat",
+    "aliases": ["Bandung Barat", "Kab Bandung Barat", "KBB", "Padalarang"]
+  },
+  {
+    "name": "Kota Cimahi",
+    "type": "city",
+    "province": "Jawa Barat",
+    "slug": "cimahi",
+    "aliases": ["Cimahi", "Kota Cimahi"]
+  },
+  {
+    "name": "Kabupaten Garut",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "garut",
+    "aliases": ["Garut", "Kab Garut", "Kabupaten Garut"]
+  },
+  {
+    "name": "Kabupaten Tasikmalaya",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "tasikmalaya",
+    "aliases": ["Tasikmalaya", "Tasik", "Kab Tasikmalaya", "Kota Tasikmalaya"]
+  },
+  {
+    "name": "Kabupaten Sumedang",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "sumedang",
+    "aliases": ["Sumedang", "Kab Sumedang", "Jatinangor"]
+  },
+  {
+    "name": "Kota Bekasi",
+    "type": "city",
+    "province": "Jawa Barat",
+    "slug": "bekasi",
+    "aliases": ["Bekasi", "Kota Bekasi", "Kab Bekasi", "Kabupaten Bekasi"]
+  },
+  {
+    "name": "Kota Bogor",
+    "type": "city",
+    "province": "Jawa Barat",
+    "slug": "bogor",
+    "aliases": ["Bogor", "Kota Bogor", "Kab Bogor", "Kabupaten Bogor"]
+  },
+  {
+    "name": "Kota Depok",
+    "type": "city",
+    "province": "Jawa Barat",
+    "slug": "depok",
+    "aliases": ["Depok", "Kota Depok"]
+  },
+  {
+    "name": "Kota DKI Jakarta",
+    "type": "city",
+    "province": "DKI Jakarta",
+    "slug": "jakarta",
+    "aliases": ["Jakarta", "DKI Jakarta", "Jakarta Selatan", "Jakarta Barat", "Jakarta Timur", "Jakarta Utara", "Jakarta Pusat"]
+  },
+  {
+    "name": "Kota Tangerang",
+    "type": "city",
+    "province": "Banten",
+    "slug": "tangerang",
+    "aliases": ["Tangerang", "Kota Tangerang", "Kab Tangerang", "Tangerang Selatan", "Tangsel"]
+  },
+  {
+    "name": "Kota Semarang",
+    "type": "city",
+    "province": "Jawa Tengah",
+    "slug": "semarang",
+    "aliases": ["Semarang", "Kota Semarang", "Kab Semarang"]
+  },
+  {
+    "name": "Kota Surakarta",
+    "type": "city",
+    "province": "Jawa Tengah",
+    "slug": "solo",
+    "aliases": ["Solo", "Surakarta", "Kota Solo", "Kota Surakarta"]
+  },
+  {
+    "name": "Kota Yogyakarta",
+    "type": "city",
+    "province": "DI Yogyakarta",
+    "slug": "yogyakarta",
+    "aliases": ["Yogyakarta", "Jogja", "Jogjakarta", "Kota Jogja"]
+  },
+  {
+    "name": "Kota Surabaya",
+    "type": "city",
+    "province": "Jawa Timur",
+    "slug": "surabaya",
+    "aliases": ["Surabaya", "Kota Surabaya"]
+  },
+  {
+    "name": "Kota Malang",
+    "type": "city",
+    "province": "Jawa Timur",
+    "slug": "malang",
+    "aliases": ["Malang", "Kota Malang", "Kab Malang"]
+  },
+  {
+    "name": "Kota Medan",
+    "type": "city",
+    "province": "Sumatera Utara",
+    "slug": "medan",
+    "aliases": ["Medan", "Kota Medan"]
+  },
+  {
+    "name": "Kota Palembang",
+    "type": "city",
+    "province": "Sumatera Selatan",
+    "slug": "palembang",
+    "aliases": ["Palembang", "Kota Palembang"]
+  },
+  {
+    "name": "Kota Makassar",
+    "type": "city",
+    "province": "Sulawesi Selatan",
+    "slug": "makassar",
+    "aliases": ["Makassar", "Kota Makassar", "Ujung Pandang"]
+  },
+  {
+    "name": "Kota Denpasar",
+    "type": "city",
+    "province": "Bali",
+    "slug": "denpasar",
+    "aliases": ["Denpasar", "Bali", "Kota Denpasar", "Badung"]
+  }
+]

@@ -1,0 +1,357 @@
+/**
+ * WiFi Aggregator Hub Public Frontend Stylesheet
+ */
+
+.wah-public-container {
+	max-width: 1140px;
+	margin: 0 auto;
+	padding: 20px;
+	font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: #1e293b;
+}
+
+/* Breadcrumbs */
+.wah-breadcrumbs {
+	font-size: 13px;
+	color: #64748b;
+	margin-bottom: 20px;
+}
+
+.wah-breadcrumbs a {
+	color: #0284c7;
+	text-decoration: none;
+}
+
+.wah-breadcrumbs a:hover {
+	text-decoration: underline;
+}
+
+/* Hero Section */
+.wah-landing-hero {
+	background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+	color: #ffffff;
+	padding: 40px;
+	border-radius: 16px;
+	margin-bottom: 30px;
+	text-align: center;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.wah-hero-badge {
+	display: inline-block;
+	background: rgba(255, 255, 255, 0.15);
+	color: #38bdf8;
+	padding: 6px 14px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	margin-bottom: 16px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.wah-landing-hero h1 {
+	color: #ffffff;
+	font-size: 32px;
+	font-weight: 800;
+	margin: 0 0 12px 0;
+	line-height: 1.3;
+}
+
+.wah-hero-sub {
+	color: #94a3b8;
+	font-size: 16px;
+	max-width: 700px;
+	margin: 0 auto 24px auto;
+}
+
+/* AI Summary Box */
+.wah-ai-summary-box {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-left: 5px solid #00a896;
+	border-radius: 12px;
+	padding: 24px;
+	margin-bottom: 30px;
+}
+
+.wah-ai-summary-box h2 {
+	margin-top: 0;
+	font-size: 18px;
+	color: #0f172a;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.wah-ai-summary-box p {
+	margin: 8px 0 0 0;
+	line-height: 1.6;
+	color: #475569;
+	font-size: 15px;
+}
+
+/* Provider Tags Strip */
+.wah-providers-strip {
+	margin-bottom: 30px;
+}
+
+.wah-providers-strip h3 {
+	font-size: 16px;
+	margin-bottom: 12px;
+	color: #334155;
+}
+
+.wah-provider-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.wah-provider-tag {
+	background: #ffffff;
+	border: 1px solid #cbd5e1;
+	padding: 8px 16px;
+	border-radius: 8px;
+	text-decoration: none;
+	color: #0f172a;
+	font-weight: 600;
+	font-size: 13px;
+	transition: all 0.2s ease;
+}
+
+.wah-provider-tag:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Articles Card Grid */
+.wah-card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 24px;
+	margin-top: 20px;
+}
+
+.wah-card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wah-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
+}
+
+.wah-card-header {
+	padding: 12px 16px;
+	background: #fafafa;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 12px;
+}
+
+.wah-card-provider {
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.wah-card-domain {
+	color: #94a3b8;
+}
+
+.wah-card-image img {
+	width: 100%;
+	height: 180px;
+	object-fit: cover;
+}
+
+.wah-card-body {
+	padding: 16px;
+	flex-grow: 1;
+}
+
+.wah-card-title {
+	font-size: 16px;
+	font-weight: 700;
+	margin: 0 0 10px 0;
+	color: #0f172a;
+	line-height: 1.4;
+}
+
+.wah-card-excerpt {
+	font-size: 13px;
+	color: #64748b;
+	margin: 0;
+	line-height: 1.5;
+}
+
+.wah-card-actions {
+	padding: 16px;
+	background: #f8fafc;
+	border-top: 1px solid #f1f5f9;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Buttons */
+.wah-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 14px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: opacity 0.2s ease;
+}
+
+.wah-btn:hover {
+	opacity: 0.9;
+}
+
+.wah-btn-outline {
+	background: #ffffff;
+	border: 1px solid #cbd5e1;
+	color: #334155;
+}
+
+.wah-btn-primary {
+	background: #00a896;
+	color: #ffffff;
+}
+
+.wah-btn-whatsapp {
+	background: #25D366;
+	color: #ffffff;
+}
+
+/* Search Box Component */
+.wah-search-widget {
+	max-width: 600px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.wah-search-box-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.wah-search-icon {
+	position: absolute;
+	left: 16px;
+	font-size: 18px;
+}
+
+#wah-search-input {
+	width: 100%;
+	padding: 14px 16px 14px 48px;
+	border-radius: 30px;
+	border: 2px solid transparent;
+	font-size: 15px;
+	outline: none;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	transition: border-color 0.2s ease;
+}
+
+#wah-search-input:focus {
+	border-color: #38bdf8;
+}
+
+.wah-search-results-dropdown {
+	position: absolute;
+	top: 110%;
+	left: 0;
+	right: 0;
+	background: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+	overflow: hidden;
+	z-index: 9999;
+	text-align: left;
+}
+
+.wah-search-item {
+	padding: 12px 18px;
+	display: block;
+	color: #0f172a;
+	text-decoration: none;
+	font-weight: 500;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.wah-search-item:hover {
+	background: #f0f9ff;
+	color: #0284c7;
+}
+
+/* Related Areas Chip Section */
+.wah-related-section {
+	margin: 40px 0;
+	padding: 24px;
+	background: #f1f5f9;
+	border-radius: 12px;
+}
+
+.wah-related-section h3 {
+	margin-top: 0;
+	font-size: 16px;
+	margin-bottom: 14px;
+}
+
+.wah-related-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.wah-related-chip {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	padding: 8px 14px;
+	border-radius: 20px;
+	font-size: 13px;
+	color: #0284c7;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.wah-related-chip:hover {
+	background: #e0f2fe;
+}
+
+/* FAQ Section */
+.wah-faq-section {
+	margin-top: 40px;
+}
+
+.wah-faq-item {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 18px;
+	margin-bottom: 12px;
+}
+
+.wah-faq-item h4 {
+	margin: 0 0 6px 0;
+	font-size: 15px;
+	color: #0f172a;
+}
+
+.wah-faq-item p {
+	margin: 0;
+	font-size: 14px;
+	color: #64748b;
+	line-height: 1.5;
+}
