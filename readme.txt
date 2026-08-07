@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.26
+Stable tag: 1.0.27
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.27 =
+* Design: Overhaul Landing Page UI/UX to High-Converting Sales Engine (Memperbarui tampilan Halaman Landing dengan banner hero glassmorphic, 3 kartu paket kecepatan ber-badge Paling Laris, benefit icon grid, ulasan pelanggan verified, dan tombol WhatsApp Sales berdenyut).
+
 = 1.0.26 =
-* Fix: User-Friendly Sync Status Notifications (Memperjelas notifikasi pop-up sinkronisasi saat artikel database sudah 100% up-to-date).
+* Fix: User-Friendly Sync Status Notifications.
 
 = 1.0.25 =
 * Feature: Google Search Console Master XML Sitemap Index.

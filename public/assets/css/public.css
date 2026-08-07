@@ -1,8 +1,8 @@
 /**
- * WiFi Aggregator Hub Public Frontend Stylesheet - Modern Premium Aesthetic
+ * WiFi Aggregator Hub Public Frontend Stylesheet - Premium High-Converting Sales UI Upgrade
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 .wah-public-container {
 	max-width: 1180px;
@@ -38,13 +38,13 @@
 
 /* Hero Section */
 .wah-landing-hero {
-	background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
+	background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
 	color: #ffffff;
-	padding: 48px 32px;
-	border-radius: 20px;
+	padding: 52px 32px;
+	border-radius: 24px;
 	margin-bottom: 36px;
 	text-align: center;
-	box-shadow: 0 20px 30px -10px rgba(2, 132, 199, 0.3);
+	box-shadow: 0 20px 35px -10px rgba(2, 132, 199, 0.35);
 	position: relative;
 	overflow: hidden;
 }
@@ -56,7 +56,7 @@
 	left: -50%;
 	width: 200%;
 	height: 200%;
-	background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 60%);
+	background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 60%);
 	pointer-events: none;
 }
 
@@ -66,24 +66,29 @@
 	gap: 6px;
 	background: rgba(255, 255, 255, 0.12);
 	backdrop-filter: blur(8px);
-	border: 1px solid rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.25);
 	color: #38bdf8;
 	padding: 6px 16px;
 	border-radius: 30px;
 	font-size: 12px;
-	font-weight: 700;
-	margin-bottom: 20px;
+	font-weight: 800;
 	text-transform: uppercase;
 	letter-spacing: 0.8px;
 }
 
 .wah-landing-hero h1 {
 	color: #ffffff;
-	font-size: 34px;
-	font-weight: 800;
-	margin: 0 0 14px 0;
+	font-size: 36px;
+	font-weight: 900;
+	margin: 16px 0 14px 0;
 	line-height: 1.25;
 	letter-spacing: -0.8px;
+}
+
+.wah-landing-hero h1 span.highlight {
+	background: linear-gradient(135deg, #38bdf8 0%, #a7f3d0 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 @media (max-width: 640px) {
@@ -91,16 +96,205 @@
 		font-size: 26px;
 	}
 	.wah-landing-hero {
-		padding: 32px 20px;
+		padding: 32px 18px;
 	}
 }
 
 .wah-hero-sub {
 	color: #cbd5e1;
 	font-size: 16px;
-	max-width: 720px;
+	max-width: 760px;
 	margin: 0 auto 28px auto;
 	line-height: 1.6;
+}
+
+/* Pulsating Sales CTA Button */
+.wah-btn-pulse {
+	background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+	color: #ffffff !important;
+	font-size: 16px !important;
+	font-weight: 800 !important;
+	padding: 16px 28px !important;
+	border-radius: 40px !important;
+	text-decoration: none !important;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	border: 2px solid #86efac;
+}
+
+.wah-btn-pulse:hover {
+	transform: translateY(-3px) scale(1.02);
+	box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+}
+
+/* High-Converting Pricing Cards Grid */
+.wah-pricing-section {
+	margin: 36px 0 44px 0;
+}
+
+.wah-pricing-header {
+	text-align: center;
+	margin-bottom: 28px;
+}
+
+.wah-pricing-header h2 {
+	font-size: 26px;
+	font-weight: 900;
+	color: #0f172a;
+	margin: 0 0 8px 0;
+	letter-spacing: -0.5px;
+}
+
+.wah-pricing-header p {
+	color: #64748b;
+	font-size: 15px;
+	margin: 0;
+}
+
+.wah-pricing-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 24px;
+}
+
+.wah-price-card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 20px;
+	padding: 32px 24px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05);
+}
+
+.wah-price-card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 20px 30px -10px rgba(2, 132, 199, 0.15);
+	border-color: #38bdf8;
+}
+
+.wah-price-card.popular {
+	border: 2px solid #0284c7;
+	background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+}
+
+.wah-popular-badge {
+	position: absolute;
+	top: -14px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 800;
+	padding: 4px 16px;
+	border-radius: 20px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+}
+
+.wah-price-card h3 {
+	font-size: 20px;
+	font-weight: 800;
+	color: #0f172a;
+	margin: 0 0 12px 0;
+}
+
+.wah-price-val {
+	font-size: 32px;
+	font-weight: 900;
+	color: #0284c7;
+	line-height: 1;
+	margin-bottom: 4px;
+}
+
+.wah-price-val span {
+	font-size: 14px;
+	font-weight: 600;
+	color: #64748b;
+}
+
+.wah-price-sub {
+	font-size: 13px;
+	color: #64748b;
+	margin-bottom: 20px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.wah-price-features {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 24px 0;
+	flex-grow: 1;
+}
+
+.wah-price-features li {
+	font-size: 14px;
+	color: #334155;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+}
+
+.wah-price-features li span {
+	color: #16a34a;
+	font-weight: 800;
+}
+
+/* Feature Benefits Grid */
+.wah-benefits-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 20px;
+	margin: 36px 0;
+}
+
+.wah-benefit-card {
+	background: #ffffff;
+	border-radius: 16px;
+	padding: 24px;
+	border: 1px solid #e2e8f0;
+	display: flex;
+	gap: 16px;
+	align-items: flex-start;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.wah-benefit-icon {
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+	background: #e0f2fe;
+	color: #0284c7;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	flex-shrink: 0;
+}
+
+.wah-benefit-content h4 {
+	margin: 0 0 4px 0;
+	font-size: 16px;
+	font-weight: 800;
+	color: #0f172a;
+}
+
+.wah-benefit-content p {
+	margin: 0;
+	font-size: 13px;
+	color: #64748b;
+	line-height: 1.5;
 }
 
 /* AI Summary Box */
@@ -116,8 +310,8 @@
 
 .wah-ai-summary-box h2 {
 	margin-top: 0;
-	font-size: 19px;
-	font-weight: 700;
+	font-size: 20px;
+	font-weight: 800;
 	color: #0f172a;
 	display: flex;
 	align-items: center;
@@ -138,8 +332,8 @@
 }
 
 .wah-providers-strip h3 {
-	font-size: 17px;
-	font-weight: 700;
+	font-size: 18px;
+	font-weight: 800;
 	margin-bottom: 14px;
 	color: #0f172a;
 	letter-spacing: -0.3px;
@@ -158,7 +352,7 @@
 	border-radius: 10px;
 	text-decoration: none;
 	color: #0f172a;
-	font-weight: 600;
+	font-weight: 700;
 	font-size: 13px;
 	transition: all 0.2s ease;
 	box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -175,8 +369,8 @@
 
 /* Articles Card Grid */
 .wah-articles-section h2 {
-	font-size: 22px;
-	font-weight: 800;
+	font-size: 24px;
+	font-weight: 900;
 	color: #0f172a;
 	margin-bottom: 20px;
 	letter-spacing: -0.4px;
@@ -198,7 +392,7 @@
 .wah-card {
 	background: #ffffff;
 	border: 1px solid #e2e8f0;
-	border-radius: 16px;
+	border-radius: 18px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -229,7 +423,7 @@
 
 .wah-card-domain {
 	color: #64748b;
-	font-weight: 500;
+	font-weight: 600;
 }
 
 .wah-card-image {
@@ -250,7 +444,6 @@
 	transform: scale(1.04);
 }
 
-/* Fallback card banner when image is missing */
 .wah-card-banner-fallback {
 	height: 140px;
 	display: flex;
@@ -269,8 +462,8 @@
 }
 
 .wah-card-title {
-	font-size: 17px;
-	font-weight: 700;
+	font-size: 18px;
+	font-weight: 800;
 	margin: 0 0 10px 0;
 	color: #0f172a;
 	line-height: 1.4;
@@ -298,17 +491,17 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 10px 16px;
-	border-radius: 10px;
-	font-size: 13px;
-	font-weight: 700;
+	padding: 12px 20px;
+	border-radius: 12px;
+	font-size: 14px;
+	font-weight: 800;
 	text-decoration: none;
 	transition: all 0.2s ease;
 	cursor: pointer;
 }
 
 .wah-btn:hover {
-	opacity: 0.92;
+	opacity: 0.94;
 	transform: translateY(-1px);
 }
 
@@ -327,16 +520,71 @@
 }
 
 .wah-btn-whatsapp {
-	background: #25D366;
+	background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 	color: #ffffff;
 	width: 100%;
 	margin-top: 4px;
-	box-shadow: 0 2px 4px rgba(37, 211, 102, 0.25);
+	box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
+/* Customer Reviews Grid */
+.wah-reviews-section {
+	margin: 48px 0;
+}
+
+.wah-reviews-section h2 {
+	font-size: 24px;
+	font-weight: 900;
+	color: #0f172a;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.wah-reviews-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 20px;
+}
+
+.wah-review-card {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 24px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.wah-review-stars {
+	color: #f59e0b;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+.wah-review-text {
+	font-size: 14px;
+	color: #334155;
+	line-height: 1.6;
+	margin-bottom: 14px;
+	font-style: italic;
+}
+
+.wah-review-author {
+	font-size: 13px;
+	font-weight: 800;
+	color: #0f172a;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.wah-review-author span {
+	color: #16a34a;
+	font-weight: 600;
 }
 
 /* Search Widget */
 .wah-search-widget {
-	max-width: 620px;
+	max-width: 640px;
 	margin: 0 auto;
 	position: relative;
 }
@@ -356,20 +604,21 @@
 
 #wah-search-input {
 	width: 100%;
-	padding: 16px 20px 16px 52px;
+	padding: 18px 24px 18px 54px;
 	border-radius: 40px;
 	border: 2px solid transparent;
-	font-size: 15px;
+	font-size: 16px;
+	font-weight: 600;
 	outline: none;
 	background: #ffffff;
 	color: #0f172a;
-	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 	transition: all 0.2s ease;
 }
 
 #wah-search-input:focus {
 	border-color: #38bdf8;
-	box-shadow: 0 12px 30px rgba(56, 189, 248, 0.3);
+	box-shadow: 0 12px 35px rgba(56, 189, 248, 0.35);
 }
 
 .wah-search-results-dropdown {
@@ -378,7 +627,7 @@
 	left: 0;
 	right: 0;
 	background: #ffffff;
-	border-radius: 14px;
+	border-radius: 16px;
 	box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 	overflow: hidden;
 	z-index: 99999;
@@ -391,7 +640,7 @@
 	display: block;
 	color: #0f172a;
 	text-decoration: none;
-	font-weight: 600;
+	font-weight: 700;
 	font-size: 14px;
 	border-bottom: 1px solid #f1f5f9;
 	transition: background 0.15s ease;
@@ -408,13 +657,13 @@
 	padding: 28px;
 	background: #f8fafc;
 	border: 1px solid #e2e8f0;
-	border-radius: 16px;
+	border-radius: 20px;
 }
 
 .wah-related-section h3 {
 	margin-top: 0;
-	font-size: 17px;
-	font-weight: 700;
+	font-size: 18px;
+	font-weight: 800;
 	margin-bottom: 16px;
 }
 
@@ -427,19 +676,19 @@
 .wah-related-chip {
 	background: #ffffff;
 	border: 1px solid #cbd5e1;
-	padding: 8px 16px;
+	padding: 8px 18px;
 	border-radius: 30px;
 	font-size: 13px;
 	color: #0284c7;
 	text-decoration: none;
-	font-weight: 600;
+	font-weight: 700;
 	transition: all 0.2s ease;
 }
 
 .wah-related-chip:hover {
 	background: #e0f2fe;
 	border-color: #38bdf8;
-	transform: translateY(-1px);
+	transform: translateY(-2px);
 }
 
 /* FAQ Section */
@@ -448,16 +697,16 @@
 }
 
 .wah-faq-section h2 {
-	font-size: 22px;
-	font-weight: 800;
+	font-size: 24px;
+	font-weight: 900;
 	margin-bottom: 20px;
 }
 
 .wah-faq-item {
 	background: #ffffff;
 	border: 1px solid #e2e8f0;
-	border-radius: 12px;
-	padding: 22px;
+	border-radius: 14px;
+	padding: 24px;
 	margin-bottom: 14px;
 	box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
@@ -465,7 +714,7 @@
 .wah-faq-item h4 {
 	margin: 0 0 8px 0;
 	font-size: 16px;
-	font-weight: 700;
+	font-weight: 800;
 	color: #0f172a;
 }
 
