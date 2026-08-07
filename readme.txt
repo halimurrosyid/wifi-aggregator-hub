@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.17
+Stable tag: 1.0.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.18 =
+* Fix: Solusi Total Fatal Error WAH_Router::register_query_vars (Menambahkan alias fungsi register_query_vars pada WAH_Router untuk menyelesaikan masalah callback TypeError).
+
 = 1.0.17 =
-* Fix: Fix Fatal Error Call to Private Method & Fallback Area Array Guarantee (Memperbaiki visibilitas metode WAH_Area_Detector::auto_discover dari private ke public dan menambahkan garansi render halaman tanpa 404/critical error).
+* Fix: Fix Fatal Error Call to Private Method & Fallback Area Array Guarantee.
 
 = 1.0.16 =
 * Fix: Solusi Total Critical Error pada Tema WordPress.

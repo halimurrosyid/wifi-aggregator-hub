@@ -28,6 +28,10 @@ class WAH_Router {
 		return $vars;
 	}
 
+	public static function register_query_vars( $vars ) {
+		return self::add_query_vars( $vars );
+	}
+
 	/**
 	 * Intercept template load for virtual routes.
 	 */
