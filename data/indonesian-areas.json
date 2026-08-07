@@ -49,6 +49,69 @@
     "aliases": ["Sumedang", "Kab Sumedang", "Jatinangor"]
   },
   {
+    "name": "Kabupaten Subang",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "subang",
+    "aliases": ["Subang", "Kab Subang", "Kabupaten Subang"]
+  },
+  {
+    "name": "Kabupaten Purwakarta",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "purwakarta",
+    "aliases": ["Purwakarta", "Kab Purwakarta", "Kabupaten Purwakarta"]
+  },
+  {
+    "name": "Kabupaten Karawang",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "karawang",
+    "aliases": ["Karawang", "Kab Karawang", "Kabupaten Karawang"]
+  },
+  {
+    "name": "Kabupaten Ciamis",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "ciamis",
+    "aliases": ["Ciamis", "Kab Ciamis", "Kabupaten Ciamis"]
+  },
+  {
+    "name": "Kabupaten Majalengka",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "majalengka",
+    "aliases": ["Majalengka", "Kab Majalengka", "Kabupaten Majalengka"]
+  },
+  {
+    "name": "Kabupaten Indramayu",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "indramayu",
+    "aliases": ["Indramayu", "Kab Indramayu", "Kabupaten Indramayu"]
+  },
+  {
+    "name": "Kabupaten Kuningan",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "kuningan",
+    "aliases": ["Kuningan", "Kab Kuningan", "Kabupaten Kuningan"]
+  },
+  {
+    "name": "Kabupaten Sukabumi",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "sukabumi",
+    "aliases": ["Sukabumi", "Kab Sukabumi", "Kota Sukabumi"]
+  },
+  {
+    "name": "Kabupaten Cianjur",
+    "type": "regency",
+    "province": "Jawa Barat",
+    "slug": "cianjur",
+    "aliases": ["Cianjur", "Kab Cianjur", "Kabupaten Cianjur"]
+  },
+  {
     "name": "Kota Bekasi",
     "type": "city",
     "province": "Jawa Barat",
@@ -119,6 +182,41 @@
     "aliases": ["Malang", "Kota Malang", "Kab Malang"]
   },
   {
+    "name": "Kabupaten Sidoarjo",
+    "type": "regency",
+    "province": "Jawa Timur",
+    "slug": "sidoarjo",
+    "aliases": ["Sidoarjo", "Kab Sidoarjo", "Kabupaten Sidoarjo"]
+  },
+  {
+    "name": "Kabupaten Gresik",
+    "type": "regency",
+    "province": "Jawa Timur",
+    "slug": "gresik",
+    "aliases": ["Gresik", "Kab Gresik", "Kabupaten Gresik"]
+  },
+  {
+    "name": "Kabupaten Pasuruan",
+    "type": "regency",
+    "province": "Jawa Timur",
+    "slug": "pasuruan",
+    "aliases": ["Pasuruan", "Kota Pasuruan", "Kab Pasuruan"]
+  },
+  {
+    "name": "Kabupaten Jember",
+    "type": "regency",
+    "province": "Jawa Timur",
+    "slug": "jember",
+    "aliases": ["Jember", "Kab Jember", "Kabupaten Jember"]
+  },
+  {
+    "name": "Kabupaten Banyuwangi",
+    "type": "regency",
+    "province": "Jawa Timur",
+    "slug": "banyuwangi",
+    "aliases": ["Banyuwangi", "Kab Banyuwangi", "Kabupaten Banyuwangi"]
+  },
+  {
     "name": "Kota Medan",
     "type": "city",
     "province": "Sumatera Utara",
@@ -131,6 +229,27 @@
     "province": "Sumatera Selatan",
     "slug": "palembang",
     "aliases": ["Palembang", "Kota Palembang"]
+  },
+  {
+    "name": "Kota Bandar Lampung",
+    "type": "city",
+    "province": "Lampung",
+    "slug": "bandar-lampung",
+    "aliases": ["Lampung", "Bandar Lampung", "Kota Bandar Lampung"]
+  },
+  {
+    "name": "Kota Batam",
+    "type": "city",
+    "province": "Kepulauan Riau",
+    "slug": "batam",
+    "aliases": ["Batam", "Kota Batam"]
+  },
+  {
+    "name": "Kota Pekanbaru",
+    "type": "city",
+    "province": "Riau",
+    "slug": "pekanbaru",
+    "aliases": ["Pekanbaru", "Kota Pekanbaru"]
   },
   {
     "name": "Kota Makassar",
