@@ -171,8 +171,8 @@ class WAH_Fetcher {
 		if ( isset( $xml->sitemap ) ) {
 			foreach ( $xml->sitemap as $sub_sitemap ) {
 				$sub_loc = (string) $sub_sitemap->loc;
-				// Filter post/article sitemaps only
-				if ( false !== stripos( $sub_loc, 'post' ) || false !== stripos( $sub_loc, 'article' ) || false !== stripos( $sub_loc, 'page' ) ) {
+				// Exclude media/author/category sub-sitemaps
+				if ( ! preg_match( '/(author|category|post_tag|attachment|media|elementor)-sitemap/i', $sub_loc ) ) {
 					$sub_results = self::fetch_sitemap( $sub_loc, $depth + 1 );
 					$results     = array_merge( $results, $sub_results );
 				}
