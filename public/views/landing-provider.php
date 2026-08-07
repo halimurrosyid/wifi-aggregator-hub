@@ -9,9 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
+if ( ! isset( $provider ) && isset( $GLOBALS['wah_current_provider'] ) ) {
+	$provider = $GLOBALS['wah_current_provider'];
+}
+if ( ! isset( $articles ) && isset( $GLOBALS['wah_current_articles'] ) ) {
+	$articles = $GLOBALS['wah_current_articles'];
+}
+
 $db            = WAH_DB::get_instance();
-$prov_name     = esc_html( $provider['name'] );
-$brand_col     = esc_attr( $provider['brand_color'] ? $provider['brand_color'] : '#00a896' );
+$prov_name     = esc_html( $provider['name'] ?? 'Provider' );
+$brand_col     = esc_attr( ( $provider['brand_color'] ?? '' ) ? $provider['brand_color'] : '#00a896' );
 $all_areas     = $db->get_areas();
 $default_wa    = get_option( 'wah_default_wa_number', '' );
 $default_cta   = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );

@@ -9,9 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
+if ( ! isset( $area ) && isset( $GLOBALS['wah_current_area'] ) ) {
+	$area = $GLOBALS['wah_current_area'];
+}
+if ( ! isset( $articles ) && isset( $GLOBALS['wah_current_articles'] ) ) {
+	$articles = $GLOBALS['wah_current_articles'];
+}
+
 $db             = WAH_DB::get_instance();
-$area_name      = esc_html( $area['name'] );
-$area_province  = esc_html( $area['province_name'] );
+$area_name      = esc_html( $area['name'] ?? 'Kota' );
+$area_province  = esc_html( $area['province_name'] ?? 'Indonesia' );
 $all_providers  = $db->get_providers();
 $all_areas      = $db->get_active_landing_areas();
 
