@@ -1,7 +1,7 @@
 <?php
 /**
  * Dynamic SEO Engine: Head tags, OpenGraph, Twitter Cards, Schema.org JSON-LD.
- * Dynamic Placeholder Replacements for Area & Provider Landing Pages.
+ * Defensive PHP logic to prevent WordPress theme conflicts and duplicate titles.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,16 +11,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WAH_SEO {
 
 	private static $current_title = '';
-	private static $current_desc  = '';
 
 	/**
-	 * Setup document title filters for WordPress theme & core.
+	 * Setup document title filters for WordPress theme & core safely before header.
 	 */
 	public static function init_title_filter( $title_str ) {
 		self::$current_title = $title_str;
-		add_filter( 'pre_get_document_title', array( __CLASS__, 'override_document_title' ), 999 );
-		add_filter( 'document_title_parts', array( __CLASS__, 'override_title_parts' ), 999 );
-		add_filter( 'wp_title', array( __CLASS__, 'override_wp_title' ), 999 );
+		add_filter( 'pre_get_document_title', array( __CLASS__, 'override_document_title' ), 9999 );
+		add_filter( 'document_title_parts', array( __CLASS__, 'override_title_parts' ), 9999 );
+		add_filter( 'wp_title', array( __CLASS__, 'override_wp_title' ), 9999, 3 );
 	}
 
 	public static function override_document_title( $title ) {
@@ -28,13 +27,17 @@ class WAH_SEO {
 	}
 
 	public static function override_title_parts( $parts ) {
+		if ( ! is_array( $parts ) ) {
+			$parts = array();
+		}
 		if ( ! empty( self::$current_title ) ) {
 			$parts['title'] = self::$current_title;
+			unset( $parts['tagline'] );
 		}
 		return $parts;
 	}
 
-	public static function override_wp_title( $title ) {
+	public static function override_wp_title( $title, $sep = '', $seplocation = '' ) {
 		return ! empty( self::$current_title ) ? self::$current_title : $title;
 	}
 
@@ -43,22 +46,23 @@ class WAH_SEO {
 	 */
 	public static function generate_meta( $type, $entity ) {
 		$site_name = get_bloginfo( 'name' );
-		$name      = $entity['name'] ?? '';
+		$name      = is_array( $entity ) && isset( $entity['name'] ) ? $entity['name'] : '';
 		$year      = date( 'Y' );
 
 		if ( 'area' === $type ) {
 			$raw_title = get_option( 'wah_seo_title_pattern', 'Pasang WiFi Murah & Provider Internet di %area% Terbaru %year%' );
 			$raw_desc  = get_option( 'wah_seo_desc_pattern', 'Daftar rekomendasi provider internet wifi unlimited terbaik di %area%. Bandingkan paket ICONNET, Indosat HiFi, CBN Fiber, Biznet, MyRepublic.' );
-
-			$title = str_replace( array( '%area%', '%year%', '%site_name%' ), array( $name, $year, $site_name ), $raw_title );
-			$desc  = str_replace( array( '%area%', '%year%', '%site_name%' ), array( $name, $year, $site_name ), $raw_desc );
 		} else {
 			$raw_title = get_option( 'wah_seo_provider_title_pattern', 'Paket Internet WiFi %provider% Indonesia - Promo & Wilayah Jangkauan %year%' );
 			$raw_desc  = get_option( 'wah_seo_provider_desc_pattern', 'Cek daftar wilayah jangkauan, pilihan paket unlimited, dan cara daftar internet %provider% terbaru di seluruh Indonesia.' );
-
-			$title = str_replace( array( '%provider%', '%year%', '%site_name%' ), array( $name, $year, $site_name ), $raw_title );
-			$desc  = str_replace( array( '%provider%', '%year%', '%site_name%' ), array( $name, $year, $site_name ), $raw_desc );
 		}
+
+		$title = str_replace( array( '%area%', '%provider%', '%year%', '%site_name%' ), array( $name, $name, $year, $site_name ), $raw_title );
+		$desc  = str_replace( array( '%area%', '%provider%', '%year%', '%site_name%' ), array( $name, $name, $year, $site_name ), $raw_desc );
+
+		// Fallback for remaining unreplaced placeholders
+		$title = str_replace( array( '%area%', '%provider%' ), array( $name, 'Internet ISP' ), $title );
+		$desc  = str_replace( array( '%area%', '%provider%' ), array( $name, 'ICONNET & ISP' ), $desc );
 
 		return array(
 			'title' => trim( $title ),
@@ -67,7 +71,7 @@ class WAH_SEO {
 	}
 
 	/**
-	 * Output complete SEO tags into wp_head.
+	 * Output complete SEO tags into wp_head (without duplicate <title> tag).
 	 */
 	public static function render_head_tags( $type, $entity, $articles = array() ) {
 		$meta      = self::generate_meta( $type, $entity );
@@ -75,9 +79,6 @@ class WAH_SEO {
 		$title     = $meta['title'];
 		$desc      = $meta['desc'];
 		$url       = self::get_canonical_url( $type, $entity );
-
-		// Set global title for WP title filters
-		self::init_title_filter( $title );
 
 		echo "\n<!-- WiFi Aggregator Hub SEO Tags -->\n";
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '" />' . "\n";
@@ -106,10 +107,12 @@ class WAH_SEO {
 	 */
 	public static function get_canonical_url( $type, $entity ) {
 		$home = home_url( '/' );
+		$slug = is_array( $entity ) && isset( $entity['slug'] ) ? $entity['slug'] : '';
+
 		if ( 'area' === $type ) {
-			return $home . 'wifi-' . $entity['slug'] . '/';
+			return $home . 'wifi-' . $slug . '/';
 		}
-		return $home . 'provider/' . $entity['slug'] . '/';
+		return $home . 'provider/' . $slug . '/';
 	}
 
 	/**
@@ -118,7 +121,7 @@ class WAH_SEO {
 	private static function render_schema_json( $type, $entity, $title, $desc, $url, $articles ) {
 		$site_name = get_bloginfo( 'name' );
 		$home_url  = home_url( '/' );
-		$name      = $entity['name'];
+		$name      = is_array( $entity ) && isset( $entity['name'] ) ? $entity['name'] : '';
 
 		// Breadcrumb Schema
 		$breadcrumb = array(

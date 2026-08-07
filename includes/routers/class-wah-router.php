@@ -44,8 +44,18 @@ class WAH_Router {
 
 		// Handle Area Landing Page
 		if ( ! empty( $area_slug ) ) {
-			$db   = WAH_DB::get_instance();
-			$area = $db->get_area_by_slug( sanitize_title( $area_slug ) );
+			$clean_slug = sanitize_title( $area_slug );
+			$db         = WAH_DB::get_instance();
+			$area       = $db->get_area_by_slug( $clean_slug );
+
+			// Auto-discover / register area if missing
+			if ( ! $area ) {
+				$raw_name = ucwords( str_replace( '-', ' ', $clean_slug ) );
+				$area_id  = WAH_Area_Detector::auto_discover( 'Pasang WiFi ' . $raw_name );
+				if ( $area_id ) {
+					$area = $db->get_area( $area_id );
+				}
+			}
 
 			if ( $area ) {
 				$articles = $db->get_articles(
