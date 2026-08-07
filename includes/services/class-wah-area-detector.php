@@ -1,6 +1,7 @@
 <?php
 /**
- * Detect Indonesian territory / area from title, excerpt, categories, tags.
+ * Smart Indonesian Area / Territory Detector Service.
+ * Automatic Fuzzy Matching & Dynamic Auto-Discovery of Indonesian Regencies/Cities.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,44 +11,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WAH_Area_Detector {
 
 	/**
-	 * Detect area ID from title, excerpt, tags.
-	 *
-	 * @param string $text Title or content snippet.
-	 * @return int Area ID or 0 if not found.
+	 * Detect area ID from text (title + excerpt + tags).
 	 */
 	public static function detect( $text ) {
-		$db    = WAH_DB::get_instance();
-		$areas = $db->get_areas();
-
-		if ( empty( $areas ) ) {
+		if ( empty( $text ) ) {
 			return 0;
 		}
 
+		$db    = WAH_DB::get_instance();
+		$areas = $db->get_areas();
+
 		$haystack = mb_strtolower( $text, 'UTF-8' );
 
+		// 1. Check existing areas in DB
 		foreach ( $areas as $area ) {
-			// Match exact area name
 			$name = mb_strtolower( $area['name'], 'UTF-8' );
-			if ( preg_match( '/\b' . preg_quote( $name, '/' ) . '\b/u', $haystack ) ) {
+			if ( false !== mb_strpos( $haystack, $name, 0, 'UTF-8' ) ) {
 				return (int) $area['id'];
 			}
 
-			// Match aliases
 			if ( ! empty( $area['aliases'] ) ) {
 				$aliases = array_map( 'trim', explode( ',', $area['aliases'] ) );
 				foreach ( $aliases as $alias ) {
-					if ( empty( $alias ) ) {
-						continue;
-					}
 					$alias_lower = mb_strtolower( $alias, 'UTF-8' );
-					if ( preg_match( '/\b' . preg_quote( $alias_lower, '/' ) . '\b/u', $haystack ) ) {
+					if ( false !== mb_strpos( $haystack, $alias_lower, 0, 'UTF-8' ) ) {
 						return (int) $area['id'];
 					}
 				}
 			}
 		}
 
-		// If not detected in DB, check for dynamic location patterns (e.g. "Kabupaten X", "Kota X", "Kab X")
+		// 2. Dynamic Auto-Discovery for new location names in title
 		$auto_area_id = self::auto_discover( $text );
 		if ( $auto_area_id > 0 ) {
 			return $auto_area_id;
@@ -57,31 +51,50 @@ class WAH_Area_Detector {
 	}
 
 	/**
-	 * Dynamically auto-discover and create new Indonesian territory if pattern matches.
+	 * Dynamically auto-discover and create new Indonesian territory from text patterns.
 	 */
 	private static function auto_discover( $text ) {
-		if ( preg_match( '/\b(Kota|Kabupaten|Kab)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b/u', $text, $matches ) ) {
-			$type_str = mb_strtolower( $matches[1] );
-			$city_name= trim( $matches[2] );
-			$type     = ( 'kota' === $type_str ) ? 'city' : 'regency';
-			$full_name= ucfirst( $matches[1] ) . ' ' . $city_name;
-			$slug     = sanitize_title( $city_name );
+		$city_name = '';
 
-			$db = WAH_DB::get_instance();
-			// Check if slug already exists
+		// Pattern A: "Kota X" or "Kabupaten X" or "Kab X"
+		if ( preg_match( '/\b(Kota|Kabupaten|Kab)\s+([A-Z][a-zA-Z\s]{2,20})\b/u', $text, $matches ) ) {
+			$city_name = trim( $matches[2] );
+		}
+		// Pattern B: "di [NamaKota]" e.g. "di Labungkari", "di Panyabungan"
+		elseif ( preg_match( '/\bdi\s+([A-Z][a-zA-Z]{2,20}(?:\s+[A-Z][a-zA-Z]{2,20})?)\b/u', $text, $matches ) ) {
+			$candidate = trim( $matches[1] );
+			// Exclude common non-location words
+			if ( ! in_self_stop_words( $candidate ) ) {
+				$city_name = $candidate;
+			}
+		}
+		// Pattern C: "IconNet [NamaKota]" or "WiFi [NamaKota]" at end of title e.g. "IconNet Sintang", "IconNet Waikabubak"
+		elseif ( preg_match( '/\b(?:IconNet|WiFi|Wifi|Pasang|Paket|Harga)\s+([A-Z][a-zA-Z]{2,20}(?:\s+[A-Z][a-zA-Z]{2,20})?)\b/u', $text, $matches ) ) {
+			$candidate = trim( $matches[1] );
+			if ( ! in_self_stop_words( $candidate ) ) {
+				$city_name = $candidate;
+			}
+		}
+
+		if ( ! empty( $city_name ) ) {
+			$slug      = sanitize_title( $city_name );
+			$full_name = 'Kota ' . ucfirst( $city_name );
+
+			$db       = WAH_DB::get_instance();
 			$existing = $db->get_area_by_slug( $slug );
+
 			if ( $existing ) {
 				return (int) $existing['id'];
 			}
 
-			// Insert new auto-discovered area into DB
+			// Insert new area into DB
 			$new_id = $db->insert_area(
 				array(
 					'name'          => $full_name,
-					'type'          => $type,
+					'type'          => 'city',
 					'province_name' => 'Indonesia',
 					'slug'          => $slug,
-					'aliases'       => $full_name . ', ' . $city_name . ', ' . $matches[1] . ' ' . $city_name,
+					'aliases'       => $full_name . ', ' . $city_name . ', Kabupaten ' . $city_name,
 				)
 			);
 
@@ -93,4 +106,12 @@ class WAH_Area_Detector {
 
 		return 0;
 	}
+}
+
+/**
+ * Filter non-location stop words for auto discovery.
+ */
+function in_self_stop_words( $word ) {
+	$stop = array( 'rumah', 'indonesia', 'murah', 'terbaru', 'terbaik', 'cepat', 'unlimited', 'fiber', 'wifi', 'iconnet', 'indihome', 'biznet', 'hifi', 'cbn', 'lengkap', 'perbandingan' );
+	return in_array( strtolower( trim( $word ) ), $stop, true );
 }

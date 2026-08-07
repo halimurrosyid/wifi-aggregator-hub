@@ -41,9 +41,8 @@ class WAH_Router {
 			if ( $area ) {
 				$articles = $db->get_articles(
 					array(
-						'area_id'         => $area['id'],
-						'include_general' => true,
-						'status'          => 'active',
+						'area_id' => $area['id'],
+						'status'  => 'active',
 					)
 				);
 

@@ -94,15 +94,15 @@ class WAH_Synchronizer {
 		foreach ( $fetched_articles as $art_data ) {
 			$existing = $db->get_article_by_url( $art_data['url'] );
 			if ( $existing ) {
-				// Update existing record
+				$detected_area = $art_data['area_id'] ? $art_data['area_id'] : WAH_Area_Detector::detect( $art_data['title'] . ' ' . $art_data['excerpt'] );
 				$db->update_article(
 					$existing['id'],
 					array(
-						'title'        => $art_data['title'],
-						'excerpt'      => $art_data['excerpt'],
-						'update_date'  => current_time( 'mysql' ),
-						'provider_id'  => $art_data['provider_id'] ? $art_data['provider_id'] : $existing['provider_id'],
-						'area_id'      => $art_data['area_id'] ? $art_data['area_id'] : $existing['area_id'],
+						'title'       => $art_data['title'],
+						'excerpt'     => $art_data['excerpt'],
+						'update_date' => current_time( 'mysql' ),
+						'provider_id' => $art_data['provider_id'] ? $art_data['provider_id'] : $existing['provider_id'],
+						'area_id'     => $detected_area ? $detected_area : $existing['area_id'],
 					)
 				);
 				$upd_count++;
