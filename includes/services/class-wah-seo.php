@@ -163,7 +163,32 @@ class WAH_SEO {
 			),
 		);
 
+		// FAQPage Schema for Google Rich Snippets
+		$faq_schema = array(
+			'@context'   => 'https://schema.org',
+			'@type'      => 'FAQPage',
+			'mainEntity' => array(
+				array(
+					'@type'          => 'Question',
+					'name'           => 'Apa provider internet wifi terbaik di ' . $name . '?',
+					'acceptedAnswer' => array(
+						'@type' => 'Answer',
+						'text'  => 'Di wilayah ' . $name . ', tersedia berbagai pilihan provider internet unlimited seperti ICONNET, Indosat HiFi, Biznet, CBN, dan MyRepublic dengan promo terpasang.',
+					),
+				),
+				array(
+					'@type'          => 'Question',
+					'name'           => 'Bagaimana cara daftar pasang baru WiFi di ' . $name . '?',
+					'acceptedAnswer' => array(
+						'@type' => 'Answer',
+						'text'  => 'Pendaftaran dapat dilakukan secara online melalui tombol Chat WhatsApp Direct Sales resmi yang tersedia di halaman ini untuk bantuan cek coverage lokasi.',
+					),
+				),
+			),
+		);
+
 		echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
 		echo '<script type="application/ld+json">' . wp_json_encode( $webpage, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
+		echo '<script type="application/ld+json">' . wp_json_encode( $faq_schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
 	}
 }
