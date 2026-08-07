@@ -1,6 +1,7 @@
 <?php
 /**
  * Router Class for virtual pages and XML Sitemaps.
+ * Includes Emergency Theme Switch Healing & Zero-404 Fallback Parser.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,6 +13,8 @@ class WAH_Router {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'add_rewrite_rules' ) );
 		add_filter( 'query_vars', array( __CLASS__, 'add_query_vars' ) );
+		add_action( 'after_switch_theme', array( __CLASS__, 'flush_rules_on_theme_switch' ) );
+		add_action( 'parse_request', array( __CLASS__, 'parse_request_fallback' ), 1 );
 		add_action( 'template_redirect', array( __CLASS__, 'template_redirect' ), 1 );
 	}
 
@@ -19,6 +22,11 @@ class WAH_Router {
 		add_rewrite_rule( '^wifi-([a-z0-9-]+)/?$', 'index.php?wah_area=$matches[1]', 'top' );
 		add_rewrite_rule( '^provider/([a-z0-9-]+)/?$', 'index.php?wah_provider=$matches[1]', 'top' );
 		add_rewrite_rule( '^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$', 'index.php?wah_sitemap=$matches[1]', 'top' );
+	}
+
+	public static function flush_rules_on_theme_switch() {
+		self::add_rewrite_rules();
+		flush_rewrite_rules();
 	}
 
 	public static function add_query_vars( $vars ) {
@@ -33,12 +41,56 @@ class WAH_Router {
 	}
 
 	/**
+	 * Fallback Request Parser: Heals permalink rules when themes are changed.
+	 */
+	public static function parse_request_fallback( $wp ) {
+		$req_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$path    = trim( wp_parse_url( $req_uri, PHP_URL_PATH ), '/' );
+
+		// Match wifi-{slug}
+		if ( preg_match( '/^wifi-([a-z0-9-]+)$/i', $path, $matches ) ) {
+			$wp->query_vars['wah_area'] = $matches[1];
+			self::heal_permalink_cache();
+		}
+		// Match provider/{slug}
+		elseif ( preg_match( '/^provider\/([a-z0-9-]+)$/i', $path, $matches ) ) {
+			$wp->query_vars['wah_provider'] = $matches[1];
+			self::heal_permalink_cache();
+		}
+		// Match sitemaps
+		elseif ( preg_match( '/^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $matches ) ) {
+			$wp->query_vars['wah_sitemap'] = $matches[1];
+		}
+	}
+
+	private static function heal_permalink_cache() {
+		$theme_key = 'wah_rules_flushed_' . get_stylesheet();
+		if ( ! get_option( $theme_key ) ) {
+			self::add_rewrite_rules();
+			flush_rewrite_rules( false );
+			update_option( $theme_key, '1' );
+		}
+	}
+
+	/**
 	 * Intercept template load for virtual routes.
 	 */
 	public static function template_redirect() {
 		$sitemap   = get_query_var( 'wah_sitemap' );
 		$area_slug = get_query_var( 'wah_area' );
 		$prov_slug = get_query_var( 'wah_provider' );
+
+		// Fallback check directly from REQUEST_URI if query_var was lost during theme switch
+		if ( empty( $area_slug ) && empty( $prov_slug ) && empty( $sitemap ) ) {
+			$path = trim( wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
+			if ( preg_match( '/^wifi-([a-z0-9-]+)$/i', $path, $m ) ) {
+				$area_slug = $m[1];
+			} elseif ( preg_match( '/^provider\/([a-z0-9-]+)$/i', $path, $m ) ) {
+				$prov_slug = $m[1];
+			} elseif ( preg_match( '/^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $m ) ) {
+				$sitemap = $m[1];
+			}
+		}
 
 		// Handle Sitemap XML
 		if ( ! empty( $sitemap ) ) {
