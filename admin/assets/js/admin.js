@@ -4,18 +4,21 @@
 jQuery(document).ready(function($) {
 	'use strict';
 
-	// Sync All Feeds
-	$('#wah-btn-sync-all').on('click', function(e) {
+	// Sync All Feeds (Dashboard Button + Sync View Button)
+	$(document).on('click', '#wah-btn-sync-all, .wah-sync-btn', function(e) {
 		e.preventDefault();
 		var $btn = $(this);
+		var originalHtml = $btn.html();
 		var $progress = $('#wah-sync-progress');
 		var $progressBar = $progress.find('.wah-progress-bar');
 		var $progressText = $progress.find('.wah-progress-text');
 
-		$btn.prop('disabled', true).addClass('updating-message');
-		$progress.removeClass('hidden');
-		$progressBar.css('width', '20%');
-		$progressText.text('Menghubungkan ke feed sources...');
+		$btn.prop('disabled', true).addClass('updating-message').html('<span class="dashicons dashicons-update spin" style="margin-top:4px;"></span> Menyinkronkan...');
+		if ($progress.length) {
+			$progress.removeClass('hidden');
+			$progressBar.css('width', '20%');
+			$progressText.text('Menghubungkan ke feed sources & sitemaps...');
+		}
 
 		$.ajax({
 			url: wahAdmin.ajax_url,
@@ -25,29 +28,31 @@ jQuery(document).ready(function($) {
 				nonce: wahAdmin.nonce
 			},
 			success: function(response) {
-				$progressBar.css('width', '100%');
-				if (response.success) {
+				if ($progressBar.length) {
+					$progressBar.css('width', '100%');
 					$progressText.text(response.data);
-					setTimeout(function() {
-						location.reload();
-					}, 1500);
+				}
+				if (response.success) {
+					alert(response.data || 'Sinkronisasi feed berhasil diselesaikan!');
+					location.reload();
 				} else {
-					$progressText.text('Error: ' + response.data);
-					$btn.prop('disabled', false).removeClass('updating-message');
+					alert('Gagal Sync: ' + response.data);
+					$btn.prop('disabled', false).removeClass('updating-message').html(originalHtml);
 				}
 			},
 			error: function() {
-				$progressText.text('Terjadi kesalahan jaringan.');
-				$btn.prop('disabled', false).removeClass('updating-message');
+				alert('Terjadi kesalahan jaringan saat melakukan sinkronisasi.');
+				$btn.prop('disabled', false).removeClass('updating-message').html(originalHtml);
 			}
 		});
 	});
 
 	// Sync Single Feed
-	$('.wah-btn-sync-single').on('click', function(e) {
+	$(document).on('click', '.wah-btn-sync-single', function(e) {
 		e.preventDefault();
 		var $btn = $(this);
 		var feedId = $btn.data('id');
+		var originalText = $btn.text();
 
 		$btn.prop('disabled', true).text('Syncing...');
 
@@ -65,20 +70,21 @@ jQuery(document).ready(function($) {
 					location.reload();
 				} else {
 					alert('Gagal: ' + response.data);
-					$btn.prop('disabled', false).text('Sync');
+					$btn.prop('disabled', false).text(originalText);
 				}
 			},
 			error: function() {
 				alert('Terjadi kesalahan koneksi.');
-				$btn.prop('disabled', false).text('Sync');
+				$btn.prop('disabled', false).text(originalText);
 			}
 		});
 	});
 
 	// Check Broken Links
-	$('#wah-btn-check-links').on('click', function(e) {
+	$(document).on('click', '#wah-btn-check-links', function(e) {
 		e.preventDefault();
 		var $btn = $(this);
+		var originalText = $btn.text();
 		$btn.prop('disabled', true).text('Pemeriksaan Berjalan...');
 
 		$.ajax({
@@ -94,12 +100,12 @@ jQuery(document).ready(function($) {
 					location.reload();
 				} else {
 					alert('Gagal: ' + response.data);
-					$btn.prop('disabled', false).text('Cek Link Rusak / Noindex');
+					$btn.prop('disabled', false).text(originalText);
 				}
 			},
 			error: function() {
 				alert('Terjadi kesalahan koneksi.');
-				$btn.prop('disabled', false).text('Cek Link Rusak / Noindex');
+				$btn.prop('disabled', false).text(originalText);
 			}
 		});
 	});
