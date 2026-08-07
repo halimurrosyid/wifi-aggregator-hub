@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.24
+Stable tag: 1.0.25
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 * **Landing Page SEO Otomatis**: Membuat Halaman SEO khusus per kota/kabupaten dan per provider lengkap dengan Schema.org JSON-LD (CollectionPage, ItemList, BreadcrumbList, FAQPage, Organization).
 * **Live Search Autocomplete**: Pencarian instan wilayah & provider menggunakan AJAX (`[wifi_search_box]`).
 * **Broken Link Checker**: Otomatis mendeteksi status HTTP 404/noindex dan menyembunyikan artikel bermasalah.
-* **Update Otomatis GitHub**: Terhubung langsung ke GitHub release for pembaruan plugin satu-klik.
+* **Update Otomatis GitHub**: Terhubung langsung ke GitHub release untuk pembaruan plugin satu-klik.
 
 == Installation ==
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.25 =
+* Feature: Google Search Console Master XML Sitemap Index (/wifi-sitemap.xml) Generator & Admin Submission Panel.
+
 = 1.0.24 =
-* Feature: Google Search AggregateRating Star Snippet Schema & Star Badge UI (Menambahkan Schema Product AggregateRating 4.8 bintang dengan 288 ulasan untuk memunculkan bintang di pencarian Google).
+* Feature: Google Search AggregateRating Star Snippet Schema & Star Badge UI.
 
 = 1.0.23 =
 * Feature: Rich FAQPage Schema.org JSON-LD.

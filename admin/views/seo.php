@@ -86,13 +86,36 @@ $review_count           = get_option( 'wah_schema_review_count', '288' );
 		</form>
 	</div>
 
-	<div class="wah-card-panel margin-top-20">
-		<h3>Mandatory XML Sitemaps Generator</h3>
-		<p>Sitemap khusus ini dikategorikan otomatis untuk membantu pengindeksan cepat Google Bot & Bing:</p>
-		<ul class="wah-sitemap-list" style="list-style:none; padding:0; margin:0;">
-			<li style="margin-bottom:10px;"><span class="dashicons dashicons-paperclip"></span> <strong>Landing Pages Sitemap:</strong> <a href="<?php echo esc_url( home_url( '/landing-sitemap.xml' ) ); ?>" target="_blank"><?php echo esc_url( home_url( '/landing-sitemap.xml' ) ); ?></a></li>
-			<li style="margin-bottom:10px;"><span class="dashicons dashicons-paperclip"></span> <strong>Providers Sitemap:</strong> <a href="<?php echo esc_url( home_url( '/provider-sitemap.xml' ) ); ?>" target="_blank"><?php echo esc_url( home_url( '/provider-sitemap.xml' ) ); ?></a></li>
-			<li style="margin-bottom:10px;"><span class="dashicons dashicons-paperclip"></span> <strong>Areas Sitemap:</strong> <a href="<?php echo esc_url( home_url( '/area-sitemap.xml' ) ); ?>" target="_blank"><?php echo esc_url( home_url( '/area-sitemap.xml' ) ); ?></a></li>
+	<!-- Google Search Console Sitemap Submission Box -->
+	<div class="wah-card-panel margin-top-20" style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:24px;">
+		<div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+			<span class="dashicons dashicons-google" style="font-size:28px; width:28px; height:28px; color:#16a34a;"></span>
+			<h3 style="margin:0; color:#14532d; font-size:18px; font-weight:700;">Google Search Console - Master XML Sitemap Submission</h3>
+		</div>
+		<p style="color:#166534; margin:0 0 16px 0; font-size:14px; line-height:1.5;">
+			Copy & paste URL <strong>Master Sitemap Index</strong> berikut ke menu <code>Peta Situs / Sitemaps</code> di <strong>Google Search Console</strong> Anda. Cukup kirimkan 1 URL ini saja, dan Googlebot akan otomatis mengindeks seluruh 6.167+ artikel, kota, & provider!
+		</p>
+
+		<div style="display:flex; gap:10px; align-items:center; background:#ffffff; padding:12px 16px; border-radius:8px; border:1px solid #86efac; margin-bottom:16px;">
+			<span class="dashicons dashicons-admin-links" style="color:#16a34a;"></span>
+			<input type="text" readonly value="<?php echo esc_url( home_url( '/wifi-sitemap.xml' ) ); ?>" style="flex:1; border:none; background:transparent; font-family:monospace; font-size:14px; font-weight:700; color:#14532d;" id="wah-master-sitemap-url" />
+			<a href="<?php echo esc_url( home_url( '/wifi-sitemap.xml' ) ); ?>" target="_blank" class="button" style="display:inline-flex; align-items:center; gap:4px;"><span class="dashicons dashicons-external" style="margin-top:2px;"></span> Buka XML</a>
+		</div>
+
+		<h4 style="margin:16px 0 10px 0; color:#14532d; font-size:14px;">Sub-Sitemaps Terkait (Otomatis Dikirim oleh Master Sitemap):</h4>
+		<ul class="wah-sitemap-list" style="list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px;">
+			<li style="background:#ffffff; padding:10px 14px; border-radius:6px; border:1px solid #dcfce7; font-size:13px;">
+				<strong>📍 Areas Sitemap:</strong><br />
+				<a href="<?php echo esc_url( home_url( '/area-sitemap.xml' ) ); ?>" target="_blank" style="color:#15803d; font-weight:600; text-decoration:underline; font-family:monospace;"><?php echo esc_url( home_url( '/area-sitemap.xml' ) ); ?></a>
+			</li>
+			<li style="background:#ffffff; padding:10px 14px; border-radius:6px; border:1px solid #dcfce7; font-size:13px;">
+				<strong>🏢 Providers Sitemap:</strong><br />
+				<a href="<?php echo esc_url( home_url( '/provider-sitemap.xml' ) ); ?>" target="_blank" style="color:#15803d; font-weight:600; text-decoration:underline; font-family:monospace;"><?php echo esc_url( home_url( '/provider-sitemap.xml' ) ); ?></a>
+			</li>
+			<li style="background:#ffffff; padding:10px 14px; border-radius:6px; border:1px solid #dcfce7; font-size:13px;">
+				<strong>🚀 Main Landings Sitemap:</strong><br />
+				<a href="<?php echo esc_url( home_url( '/landing-sitemap.xml' ) ); ?>" target="_blank" style="color:#15803d; font-weight:600; text-decoration:underline; font-family:monospace;"><?php echo esc_url( home_url( '/landing-sitemap.xml' ) ); ?></a>
+			</li>
 		</ul>
 	</div>
 </div>

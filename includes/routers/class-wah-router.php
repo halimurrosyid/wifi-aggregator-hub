@@ -22,7 +22,7 @@ class WAH_Router {
 	public static function add_rewrite_rules() {
 		add_rewrite_rule( '^wifi-([a-z0-9-]+)/?$', 'index.php?wah_area=$matches[1]', 'top' );
 		add_rewrite_rule( '^provider/([a-z0-9-]+)/?$', 'index.php?wah_provider=$matches[1]', 'top' );
-		add_rewrite_rule( '^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$', 'index.php?wah_sitemap=$matches[1]', 'top' );
+		add_rewrite_rule( '^(wifi-sitemap|sitemap-index|landing-sitemap|provider-sitemap|area-sitemap)\.xml$', 'index.php?wah_sitemap=$matches[1]', 'top' );
 	}
 
 	public static function add_rewrite_rules_and_auto_flush() {
@@ -62,7 +62,7 @@ class WAH_Router {
 			$query_vars['wah_area'] = $m[1];
 		} elseif ( preg_match( '/^provider\/([a-z0-9-]+)$/i', $path, $m ) ) {
 			$query_vars['wah_provider'] = $m[1];
-		} elseif ( preg_match( '/^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $m ) ) {
+		} elseif ( preg_match( '/^(wifi-sitemap|sitemap-index|landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $m ) ) {
 			$query_vars['wah_sitemap'] = $m[1];
 		}
 
@@ -88,7 +88,7 @@ class WAH_Router {
 				$area_slug = $m[1];
 			} elseif ( preg_match( '/^provider\/([a-z0-9-]+)$/i', $path, $m ) ) {
 				$prov_slug = $m[1];
-			} elseif ( preg_match( '/^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $m ) ) {
+			} elseif ( preg_match( '/^(wifi-sitemap|sitemap-index|landing-sitemap|provider-sitemap|area-sitemap)\.xml$/i', $path, $m ) ) {
 				$sitemap = $m[1];
 			}
 		}
