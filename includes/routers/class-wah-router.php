@@ -57,31 +57,42 @@ class WAH_Router {
 				}
 			}
 
-			if ( $area ) {
-				$articles = $db->get_articles(
-					array(
-						'area_id' => $area['id'],
-						'status'  => 'active',
-					)
+			// Fallback array guarantee if area is not registered in DB
+			if ( ! $area ) {
+				$raw_name = ucwords( str_replace( '-', ' ', $clean_slug ) );
+				$area     = array(
+					'id'            => 0,
+					'name'          => 'Kota ' . $raw_name,
+					'province_name' => 'Indonesia',
+					'slug'          => $clean_slug,
+					'type'          => 'city',
+					'aliases'       => $raw_name,
 				);
-
-				// Immediately generate meta title and initialize title filters for theme & WP head
-				$meta = WAH_SEO::generate_meta( 'area', $area );
-				WAH_SEO::init_title_filter( $meta['title'] );
-
-				// Output SEO tags into wp_head
-				add_action(
-					'wp_head',
-					function() use ( $area, $articles ) {
-						WAH_SEO::render_head_tags( 'area', $area, $articles );
-					},
-					1
-				);
-
-				status_header( 200 );
-				include WAH_PLUGIN_DIR . 'public/views/landing-area.php';
-				exit;
 			}
+
+			$articles = $db->get_articles(
+				array(
+					'area_id' => $area['id'],
+					'status'  => 'active',
+				)
+			);
+
+			// Immediately generate meta title and initialize title filters for theme & WP head
+			$meta = WAH_SEO::generate_meta( 'area', $area );
+			WAH_SEO::init_title_filter( $meta['title'] );
+
+			// Output SEO tags into wp_head
+			add_action(
+				'wp_head',
+				function() use ( $area, $articles ) {
+					WAH_SEO::render_head_tags( 'area', $area, $articles );
+				},
+				1
+			);
+
+			status_header( 200 );
+			include WAH_PLUGIN_DIR . 'public/views/landing-area.php';
+			exit;
 		}
 
 		// Handle Provider Landing Page

@@ -53,7 +53,7 @@ class WAH_Area_Detector {
 	/**
 	 * Dynamically auto-discover and create new Indonesian territory from text patterns.
 	 */
-	private static function auto_discover( $text ) {
+	public static function auto_discover( $text ) {
 		$city_name = '';
 
 		// Pattern A: "Kota X" or "Kabupaten X" or "Kab X"
