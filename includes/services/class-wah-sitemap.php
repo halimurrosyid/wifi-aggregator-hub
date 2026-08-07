@@ -27,7 +27,7 @@ class WAH_Sitemap {
 		$home = home_url( '/' );
 
 		if ( 'area' === $type ) {
-			$areas = $db->get_areas();
+			$areas = $db->get_active_landing_areas();
 			foreach ( $areas as $area ) {
 				$loc     = $home . 'wifi-' . $area['slug'] . '/';
 				$lastmod = current_time( 'Y-m-d' );

@@ -146,6 +146,24 @@ class WAH_DB {
 		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE slug = %s", $slug ), ARRAY_A );
 	}
 
+	/**
+	 * Get ONLY areas that have at least 1 active indexed article.
+	 */
+	public function get_active_landing_areas() {
+		global $wpdb;
+		$t_areas    = $wpdb->prefix . 'wah_areas';
+		$t_articles = $wpdb->prefix . 'wah_articles';
+
+		return $wpdb->get_results(
+			"SELECT DISTINCT a.* 
+			 FROM $t_areas a 
+			 INNER JOIN $t_articles ar ON a.id = ar.area_id 
+			 WHERE ar.status = 'active' AND ar.area_id > 0 
+			 ORDER BY a.name ASC",
+			ARRAY_A
+		);
+	}
+
 	public function search_areas( $keyword, $limit = 10 ) {
 		global $wpdb;
 		$table = $wpdb->prefix . 'wah_areas';

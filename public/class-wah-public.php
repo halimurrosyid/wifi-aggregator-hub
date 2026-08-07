@@ -86,7 +86,7 @@ class WAH_Public {
 	public function render_area_grid_shortcode( $atts ) {
 		$atts  = shortcode_atts( array( 'limit' => 12 ), $atts );
 		$db    = WAH_DB::get_instance();
-		$areas = array_slice( $db->get_areas(), 0, intval( $atts['limit'] ) );
+		$areas = array_slice( $db->get_active_landing_areas(), 0, intval( $atts['limit'] ) );
 
 		ob_start();
 		?>

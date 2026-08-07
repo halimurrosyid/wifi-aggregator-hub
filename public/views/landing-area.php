@@ -13,7 +13,7 @@ $db             = WAH_DB::get_instance();
 $area_name      = esc_html( $area['name'] );
 $area_province  = esc_html( $area['province_name'] );
 $all_providers  = $db->get_providers();
-$all_areas      = $db->get_areas();
+$all_areas      = $db->get_active_landing_areas();
 
 // Filter related areas in the same province for internal linking
 $related_areas = array_filter(
