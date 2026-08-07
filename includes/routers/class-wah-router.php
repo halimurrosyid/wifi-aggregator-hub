@@ -1,6 +1,6 @@
 <?php
 /**
- * Router handling virtual URL rewrites for Landing Pages & Sitemaps.
+ * Router Class for virtual pages and XML Sitemaps.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,10 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WAH_Router {
 
-	/**
-	 * Register query variables.
-	 */
-	public static function register_query_vars( $vars ) {
+	public static function init() {
+		add_action( 'init', array( __CLASS__, 'add_rewrite_rules' ) );
+		add_filter( 'query_vars', array( __CLASS__, 'add_query_vars' ) );
+		add_action( 'template_redirect', array( __CLASS__, 'template_redirect' ), 1 );
+	}
+
+	public static function add_rewrite_rules() {
+		add_rewrite_rule( '^wifi-([a-z0-9-]+)/?$', 'index.php?wah_area=$matches[1]', 'top' );
+		add_rewrite_rule( '^provider/([a-z0-9-]+)/?$', 'index.php?wah_provider=$matches[1]', 'top' );
+		add_rewrite_rule( '^(landing-sitemap|provider-sitemap|area-sitemap)\.xml$', 'index.php?wah_sitemap=$matches[1]', 'top' );
+	}
+
+	public static function add_query_vars( $vars ) {
 		$vars[] = 'wah_area';
 		$vars[] = 'wah_provider';
 		$vars[] = 'wah_sitemap';
@@ -23,7 +32,7 @@ class WAH_Router {
 	 * Intercept template load for virtual routes.
 	 */
 	public static function template_redirect() {
-		$sitemap  = get_query_var( 'wah_sitemap' );
+		$sitemap   = get_query_var( 'wah_sitemap' );
 		$area_slug = get_query_var( 'wah_area' );
 		$prov_slug = get_query_var( 'wah_provider' );
 
@@ -46,12 +55,17 @@ class WAH_Router {
 					)
 				);
 
-				// Output SEO tags
+				// Immediately generate meta title and initialize title filters for theme & WP head
+				$meta = WAH_SEO::generate_meta( 'area', $area );
+				WAH_SEO::init_title_filter( $meta['title'] );
+
+				// Output SEO tags into wp_head
 				add_action(
 					'wp_head',
 					function() use ( $area, $articles ) {
 						WAH_SEO::render_head_tags( 'area', $area, $articles );
-					}
+					},
+					1
 				);
 
 				status_header( 200 );
@@ -73,12 +87,17 @@ class WAH_Router {
 					)
 				);
 
-				// Output SEO tags
+				// Immediately generate meta title and initialize title filters
+				$meta = WAH_SEO::generate_meta( 'provider', $provider );
+				WAH_SEO::init_title_filter( $meta['title'] );
+
+				// Output SEO tags into wp_head
 				add_action(
 					'wp_head',
 					function() use ( $provider, $articles ) {
 						WAH_SEO::render_head_tags( 'provider', $provider, $articles );
-					}
+					},
+					1
 				);
 
 				status_header( 200 );

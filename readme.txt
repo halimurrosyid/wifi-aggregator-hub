@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.13 =
+* Fix & Feature: Dynamic SEO Meta Pattern Integration (Mengintegrasikan pola template SEO title & description kustom dari admin langsung ke head tags, filters document_title, OpenGraph, Twitter Cards, dan JSON-LD pada seluruh landing page).
+
 = 1.0.12 =
-* Feature: Eksklusif Tombol Custom CTA (Menghapus total link/tombol yang mengarah ke artikel asli external dan menggantinya 100% dengan Tombol CTA Custom / WhatsApp Direct Sales pilihan Anda).
+* Feature: Eksklusif Tombol Custom CTA.
 
 = 1.0.11 =
 * Feature: Paginasi Tabel Admin Per Page View & Grafik Analitik Visual.
