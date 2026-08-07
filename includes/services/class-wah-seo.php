@@ -187,8 +187,39 @@ class WAH_SEO {
 			),
 		);
 
+		// AggregateRating Product Schema for Google Search Rating Stars Snippet
+		$rating_val   = get_option( 'wah_schema_rating_value', '4.8' );
+		$review_count = get_option( 'wah_schema_review_count', '288' );
+
+		$product_schema = array(
+			'@context'        => 'https://schema.org',
+			'@type'           => 'Product',
+			'name'            => ( 'area' === $type ? 'Pasang WiFi ' . $name : 'Paket Internet ' . $name ),
+			'description'     => $desc,
+			'url'             => $url,
+			'brand'           => array(
+				'@type' => 'Brand',
+				'name'  => $name,
+			),
+			'aggregateRating' => array(
+				'@type'       => 'AggregateRating',
+				'ratingValue' => (string) $rating_val,
+				'reviewCount' => (string) $review_count,
+				'bestRating'  => '5',
+				'worstRating' => '1',
+			),
+			'offers'          => array(
+				'@type'         => 'AggregateOffer',
+				'priceCurrency' => 'IDR',
+				'lowPrice'      => '150000',
+				'highPrice'     => '500000',
+				'offerCount'    => count( $articles ) > 0 ? (string) count( $articles ) : '10',
+			),
+		);
+
 		echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
 		echo '<script type="application/ld+json">' . wp_json_encode( $webpage, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
 		echo '<script type="application/ld+json">' . wp_json_encode( $faq_schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
+		echo '<script type="application/ld+json">' . wp_json_encode( $product_schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "</script>\n";
 	}
 }

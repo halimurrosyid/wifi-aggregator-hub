@@ -46,7 +46,10 @@ $default_cta = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );
 
 	<!-- Hero Banner -->
 	<header class="wah-landing-hero">
-		<span class="wah-hero-badge">Portal Pencarian Provider Internet</span>
+		<div style="display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+			<span class="wah-hero-badge">Portal Pencarian Provider Internet</span>
+			<span style="display:inline-flex; align-items:center; gap:6px; background:#fef3c7; color:#92400e; padding:5px 14px; border-radius:20px; font-size:13px; font-weight:700; border:1px solid #fde68a;">⭐ <?php echo esc_html( get_option( 'wah_schema_rating_value', '4.8' ) ); ?> / 5.0 (<?php echo esc_html( get_option( 'wah_schema_review_count', '288' ) ); ?> Ulasan Pelanggan)</span>
+		</div>
 		<h1>Pasang WiFi & Provider Internet Terbaik di <?php echo $area_name; ?></h1>
 		<p class="wah-hero-sub">Bandingkan paket internet fiber optic unlimited murah dari berbagai penyedia resmi di <?php echo $area_name; ?> (<?php echo $area_province; ?>).</p>
 
