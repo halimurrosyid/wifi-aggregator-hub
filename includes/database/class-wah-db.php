@@ -292,10 +292,66 @@ class WAH_DB {
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
-	public function get_article_by_url( $url ) {
+	public function get_all_urls_map() {
+		global $wpdb;
+		$table   = $wpdb->prefix . 'wah_articles';
+		$results = $wpdb->get_results( "SELECT id, url, provider_id, area_id FROM $table", ARRAY_A );
+		$map     = array();
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $row ) {
+				$map[ $row['url'] ] = $row;
+			}
+		}
+		return $map;
+	}
+
+	public function batch_insert_articles( $articles_batch ) {
+		if ( empty( $articles_batch ) ) {
+			return 0;
+		}
+
 		global $wpdb;
 		$table = $wpdb->prefix . 'wah_articles';
-		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE url = %s", $url ), ARRAY_A );
+		$rows  = array();
+		$vals  = array();
+
+		foreach ( $articles_batch as $data ) {
+			$domain = wp_parse_url( $data['url'], PHP_URL_HOST );
+			if ( ! $domain ) {
+				$domain = $data['website_name'] ?? '';
+			}
+
+			$rows[] = '(%d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %s, %s)';
+			array_push(
+				$vals,
+				intval( $data['feed_id'] ?? 0 ),
+				intval( $data['provider_id'] ?? 0 ),
+				intval( $data['area_id'] ?? 0 ),
+				sanitize_text_field( $data['title'] ),
+				esc_url_raw( $data['url'] ),
+				sanitize_title( $data['slug'] ?? $data['title'] ),
+				! empty( $data['publish_date'] ) ? $data['publish_date'] : current_time( 'mysql' ),
+				! empty( $data['update_date'] ) ? $data['update_date'] : current_time( 'mysql' ),
+				wp_strip_all_tags( $data['excerpt'] ?? '' ),
+				sanitize_textarea_field( $data['ai_summary'] ?? '' ),
+				esc_url_raw( $data['featured_image'] ?? '' ),
+				sanitize_text_field( $data['category'] ?? '' ),
+				sanitize_text_field( $data['tags'] ?? '' ),
+				sanitize_text_field( $data['website_name'] ?? '' ),
+				esc_url_raw( $data['cta_url'] ?? $data['url'] ),
+				sanitize_text_field( $data['whatsapp_number'] ?? '' ),
+				sanitize_text_field( $domain ),
+				intval( str_word_count( strip_tags( $data['excerpt'] ?? '' ) ) ),
+				sanitize_text_field( $data['status'] ?? 'active' ),
+				sanitize_text_field( $data['http_status'] ?? '200' )
+			);
+		}
+
+		$sql = "INSERT IGNORE INTO $table (feed_id, provider_id, area_id, title, url, slug, publish_date, update_date, excerpt, ai_summary, featured_image, category, tags, website_name, cta_url, whatsapp_number, domain, word_count, status, http_status) VALUES " . implode( ', ', $rows );
+
+		$prepared = $wpdb->prepare( $sql, $vals );
+		$wpdb->query( $prepared );
+		return count( $articles_batch );
 	}
 
 	public function insert_article( $data ) {

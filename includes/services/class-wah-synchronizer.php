@@ -66,6 +66,9 @@ class WAH_Synchronizer {
 	 * Sync single feed by feed ID.
 	 */
 	public static function sync_feed( $feed_id ) {
+		@set_time_limit( 600 );
+		@ini_set( 'memory_limit', '512M' );
+
 		$db   = WAH_DB::get_instance();
 		$feed = $db->get_feed( $feed_id );
 
@@ -88,12 +91,15 @@ class WAH_Synchronizer {
 			return $fetched_articles;
 		}
 
-		$new_count = 0;
-		$upd_count = 0;
+		$existing_map = $db->get_all_urls_map();
+		$new_batch    = array();
+		$new_count    = 0;
+		$upd_count    = 0;
 
 		foreach ( $fetched_articles as $art_data ) {
-			$existing = $db->get_article_by_url( $art_data['url'] );
-			if ( $existing ) {
+			$url = $art_data['url'];
+			if ( isset( $existing_map[ $url ] ) ) {
+				$existing = $existing_map[ $url ];
 				$detected_area = $art_data['area_id'] ? $art_data['area_id'] : WAH_Area_Detector::detect( $art_data['title'] . ' ' . $art_data['excerpt'] );
 				$db->update_article(
 					$existing['id'],
@@ -107,10 +113,20 @@ class WAH_Synchronizer {
 				);
 				$upd_count++;
 			} else {
-				// Insert new article
-				$db->insert_article( $art_data );
+				$new_batch[] = $art_data;
 				$new_count++;
+
+				// Process in chunks of 200 items for max DB speed
+				if ( count( $new_batch ) >= 200 ) {
+					$db->batch_insert_articles( $new_batch );
+					$new_batch = array();
+				}
 			}
+		}
+
+		// Insert remaining batch
+		if ( ! empty( $new_batch ) ) {
+			$db->batch_insert_articles( $new_batch );
 		}
 
 		// Update feed status
