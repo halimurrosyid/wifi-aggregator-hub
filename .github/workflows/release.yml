@@ -1,0 +1,52 @@
+name: Automatic Release & WP Update Builder
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Extract Version & Generate Tag
+        id: get_version
+        run: |
+          VERSION=$(grep -i "Version:" wifi-aggregator-hub.php | head -n 1 | awk '{print $NF}' | tr -d '\r')
+          if [ -z "$VERSION" ]; then VERSION="1.0.0"; fi
+          BUILD_NUM=${{ github.run_number }}
+          RELEASE_TAG="v${VERSION}.${BUILD_NUM}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build Clean Plugin Zip Package
+        run: |
+          mkdir -p build/wifi-aggregator-hub
+          cp -r wifi-aggregator-hub.php readme.txt README.md data includes admin public build/wifi-aggregator-hub/
+          cd build
+          zip -r wifi-aggregator-hub.zip wifi-aggregator-hub
+
+      - name: Publish Automatic GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.tag }}
+          name: "Release ${{ steps.get_version.outputs.tag }}"
+          body: |
+            🚀 Automated Release Update for WiFi Aggregator Hub
+            - Base Version: ${{ steps.get_version.outputs.version }}
+            - Build Tag: ${{ steps.get_version.outputs.tag }}
+            - Commit: ${{ github.sha }}
+          files: build/wifi-aggregator-hub.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
