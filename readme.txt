@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,11 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.8 =
+* Feature: Cakupan Wilayah Berjenjang Kecamatan & Desa (Menampilkan daftar lengkap Kecamatan & Desa/Kelurahan pada bagian "Wilayah Jangkauan Sekitar" untuk akurasi SEO lokal maksimal).
+
 = 1.0.7 =
-* Fix & Feature: Presisi Deteksi Wilayah Kota (memperbaiki pencocokan kata kota seperti Sintang, Labungkari, Panyabungan, Waikabubak dan mengunci halaman area agar 100% khusus kota terkait).
+* Fix & Feature: Presisi Deteksi Wilayah Kota (memperbaiki pencocokan kata kota seperti Sintang, Labungkari, Panyabungan, Waikabubak).
 
 = 1.0.6 =
 * Feature: Penyaringan Dinamis Landing Pages (Hanya wilayah yang memiliki artikel terindeks yang ditampilkan dalam daftar Landing Pages, Sitemap, dan link terkait).

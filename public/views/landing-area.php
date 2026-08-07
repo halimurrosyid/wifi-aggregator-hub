@@ -127,9 +127,25 @@ $default_cta = get_option( 'wah_default_cta_text', 'Daftar Sekarang' );
 		<?php endif; ?>
 	</main>
 
+	<!-- Sub-Area & Kecamatan Coverage Section -->
+	<div class="wah-card-panel margin-top-30" style="background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05); margin-top:25px;">
+		<h3 style="font-size:18px; font-weight:700; color:#0f172a; margin-top:0; margin-bottom:8px;">📍 Wilayah Jangkauan Sekitar <?php echo esc_html( $area_name ); ?>:</h3>
+		<p style="color:#64748b; font-size:14px; margin-bottom:15px;">Layanan pemasangan internet WiFi super cepat melayani seluruh area kecamatan, desa, dan kelurahan di sekitar <?php echo esc_html( $area_name ); ?>:</p>
+		<div style="display:flex; flex-wrap:wrap; gap:8px;">
+			<?php 
+			$sub_areas = $db->get_sub_areas( $area );
+			foreach ( $sub_areas as $sub ) : 
+			?>
+				<span style="background:#f1f5f9; color:#334155; padding:6px 12px; border-radius:20px; font-size:13px; font-weight:500; border:1px solid #e2e8f0; display:inline-flex; align-items:center; gap:5px;">
+					📌 <?php echo esc_html( $sub ); ?>
+				</span>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
 	<!-- Internal Linking Section: Related Areas -->
 	<section class="wah-related-section">
-		<h3>Wilayah Jangkauan Sekitar <?php echo $area_name; ?>:</h3>
+		<h3>Kota & Kabupaten Lainnya:</h3>
 		<div class="wah-related-links">
 			<?php foreach ( $related_areas as $rel ) : ?>
 				<a href="<?php echo esc_url( home_url( '/wifi-' . $rel['slug'] . '/' ) ); ?>" class="wah-related-chip">

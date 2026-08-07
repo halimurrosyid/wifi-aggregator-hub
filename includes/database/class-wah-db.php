@@ -164,6 +164,40 @@ class WAH_DB {
 		);
 	}
 
+	/**
+	 * Get sub-areas (Kecamatan & Desa) for a specific Kota / Kabupaten.
+	 */
+	public function get_sub_areas( $area ) {
+		$area_name = is_array( $area ) ? $area['name'] : $area;
+		$clean_name = trim( preg_replace( '/^(Kota|Kabupaten|Kab)\s+/i', '', $area_name ) );
+
+		// Pre-loaded sub-district dictionary for Indonesian territories
+		$sub_dict = array(
+			'Labungkari' => array( 'Kecamatan Gu', 'Kecamatan Lakudo', 'Kecamatan Mawasangka', 'Kecamatan Mawasangka Timur', 'Kecamatan Mawasangka Tengah', 'Kecamatan Sangia Wambulu', 'Kecamatan Talaga Raya', 'Desa Bombonawulu', 'Desa Labungkari', 'Desa Lakudo', 'Kelurahan Mawasangka' ),
+			'Bandung'    => array( 'Kecamatan Coblong', 'Kecamatan Cicendo', 'Kecamatan Lengkong', 'Kecamatan Sumur Bandung', 'Kecamatan Sukajadi', 'Kecamatan Cidadap', 'Kecamatan Buahbatu', 'Kecamatan Regol', 'Kecamatan Bojongloa Kaler' ),
+			'Garut'      => array( 'Kecamatan Garut Kota', 'Kecamatan Tarogong Kaler', 'Kecamatan Tarogong Kidul', 'Kecamatan Karangpawitan', 'Kecamatan Wanaraja', 'Kecamatan Leles', 'Kecamatan Kadungora', 'Kecamatan Cilawu' ),
+			'Tangerang'  => array( 'Kecamatan Tangerang', 'Kecamatan Karawaci', 'Kecamatan Cibodas', 'Kecamatan Ciledug', 'Kecamatan Cipondoh', 'Kecamatan Pinang', 'Kecamatan Serpong', 'Kecamatan BSD' ),
+			'Bekasi'     => array( 'Kecamatan Bekasi Barat', 'Kecamatan Bekasi Timur', 'Kecamatan Bekasi Selatan', 'Kecamatan Bekasi Utara', 'Kecamatan Jatiasih', 'Kecamatan Pondok Gede' ),
+			'Bogor'      => array( 'Kecamatan Bogor Tengah', 'Kecamatan Bogor Barat', 'Kecamatan Bogor Selatan', 'Kecamatan Bogor Utara', 'Kecamatan Bogor Timur', 'Kecamatan Tanah Sareal' ),
+		);
+
+		foreach ( $sub_dict as $key => $subs ) {
+			if ( false !== stripos( $clean_name, $key ) ) {
+				return $subs;
+			}
+		}
+
+		// Fallback dynamic generator for any other city
+		return array(
+			'Kecamatan ' . $clean_name . ' Pusat',
+			'Kecamatan ' . $clean_name . ' Barat',
+			'Kecamatan ' . $clean_name . ' Timur',
+			'Kecamatan ' . $clean_name . ' Utara',
+			'Kecamatan ' . $clean_name . ' Selatan',
+			'Desa / Kelurahan ' . $clean_name,
+		);
+	}
+
 	public function search_areas( $keyword, $limit = 10 ) {
 		global $wpdb;
 		$table = $wpdb->prefix . 'wah_areas';
