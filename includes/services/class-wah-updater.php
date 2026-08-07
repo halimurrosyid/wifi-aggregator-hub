@@ -1,6 +1,7 @@
 <?php
 /**
- * GitHub Automatic Plugin Updater Service.
+ * Ultra-Reliable GitHub Automatic Plugin Updater Service.
+ * Direct Raw Branch Version Checking & Force Refresh.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,35 +11,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WAH_Updater {
 
 	private $file;
-	private $plugin;
 	private $basename;
-	private $active;
 	private $username;
 	private $repository;
-	private $github_response;
+	private $remote_version;
+	private $download_url;
 
 	public function __construct( $file ) {
 		$this->file       = $file;
 		$this->username   = 'halimurrosyid';
 		$this->repository = 'wifi-aggregator-hub';
 		$this->basename   = plugin_basename( $this->file );
+		$this->download_url = sprintf( 'https://github.com/%s/%s/raw/main/wifi-aggregator-hub.zip', $this->username, $this->repository );
 
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'modify_transient' ) );
 		add_filter( 'plugins_api', array( $this, 'plugin_popup' ), 10, 3 );
-		add_filter( 'upgrader_post_install', array( $this, 'after_install' ), 10, 3 );
+		add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_links' ) );
+		add_action( 'admin_init', array( $this, 'handle_force_check' ) );
 	}
 
 	/**
-	 * Get release data from GitHub API.
+	 * Fetch latest version header directly from GitHub main branch raw file.
 	 */
-	private function get_repository_info() {
-		if ( null !== $this->github_response ) {
+	private function get_remote_version() {
+		if ( null !== $this->remote_version ) {
 			return;
 		}
 
-		$request_uri = sprintf( 'https://api.github.com/repos/%s/%s/releases/latest', $this->username, $this->repository );
-		$response    = wp_remote_get(
-			$request_uri,
+		$raw_url  = sprintf( 'https://raw.githubusercontent.com/%s/%s/main/wifi-aggregator-hub.php', $this->username, $this->repository );
+		$response = wp_remote_get(
+			$raw_url,
 			array(
 				'timeout'    => 10,
 				'user-agent' => 'WiFiAggregatorHub-Updater/1.0',
@@ -49,36 +51,28 @@ class WAH_Updater {
 			return;
 		}
 
-		$this->github_response = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body = wp_remote_retrieve_body( $response );
+		if ( preg_match( '/Version:\s*([0-9\.]+)/i', $body, $matches ) ) {
+			$this->remote_version = trim( $matches[1] );
+		}
 	}
 
 	/**
-	 * Check for updates and modify WP transient.
+	 * Modify WP plugin update transient.
 	 */
 	public function modify_transient( $transient ) {
-		if ( empty( $transient->checked ) ) {
-			return $transient;
+		if ( ! is_object( $transient ) ) {
+			$transient = new stdClass();
 		}
 
-		$this->get_repository_info();
+		$this->get_remote_version();
 
-		if ( empty( $this->github_response ) || empty( $this->github_response['tag_name'] ) ) {
-			return $transient;
-		}
-
-		$new_version = ltrim( $this->github_response['tag_name'], 'v' );
-
-		if ( version_compare( WAH_VERSION, $new_version, '<' ) ) {
-			$package = $this->github_response['zipball_url'] ?? '';
-			if ( ! empty( $this->github_response['assets'][0]['browser_download_url'] ) ) {
-				$package = $this->github_response['assets'][0]['browser_download_url'];
-			}
-
-			$plugin              = array(
+		if ( ! empty( $this->remote_version ) && version_compare( WAH_VERSION, $this->remote_version, '<' ) ) {
+			$plugin = array(
 				'slug'        => $this->basename,
-				'new_version' => $new_version,
-				'url'         => 'https://github.com/' . $this->username . '/' . $this->repository,
-				'package'     => $package,
+				'new_version' => $this->remote_version,
+				'url'         => sprintf( 'https://github.com/%s/%s', $this->username, $this->repository ),
+				'package'     => $this->download_url,
 			);
 			$transient->response[ $this->basename ] = (object) $plugin;
 		}
@@ -87,53 +81,58 @@ class WAH_Updater {
 	}
 
 	/**
-	 * Render Plugin details modal popup in WP Admin.
+	 * Render plugin info modal popup in WP Admin.
 	 */
 	public function plugin_popup( $result, $action, $args ) {
 		if ( 'plugin_information' !== $action || empty( $args->slug ) || $args->slug !== $this->basename ) {
 			return $result;
 		}
 
-		$this->get_repository_info();
-
-		if ( empty( $this->github_response ) ) {
-			return $result;
-		}
-
-		$new_version = ltrim( $this->github_response['tag_name'], 'v' );
-		$download_url= $this->github_response['zipball_url'] ?? '';
-		if ( ! empty( $this->github_response['assets'][0]['browser_download_url'] ) ) {
-			$download_url = $this->github_response['assets'][0]['browser_download_url'];
-		}
+		$this->get_remote_version();
 
 		$plugin = array(
 			'name'              => 'WiFi Aggregator Hub',
 			'slug'              => $this->basename,
-			'version'           => $new_version,
-			'author'            => '<a href="https://indahweb.com">Mujaddid Halimurrosyid Ajid WP</a>',
-			'homepage'          => 'https://github.com/halimurrosyid/wifi-aggregator-hub',
+			'version'           => $this->remote_version ? $this->remote_version : WAH_VERSION,
+			'author'            => '<a href="https://indahweb.com" target="_blank">Mujaddid Halimurrosyid Ajid WP</a>',
+			'homepage'          => sprintf( 'https://github.com/%s/%s', $this->username, $this->repository ),
 			'requires'          => '5.8',
 			'tested'            => '6.6',
 			'downloaded'        => 1000,
-			'last_updated'      => $this->github_response['published_at'] ?? '',
 			'sections'          => array(
 				'description' => 'Mesin indeks dan agregator pencarian provider internet Indonesia dari berbagai feed website dengan pengelompokan wilayah & provider, deduplikasi otomatis, dan landing page SEO.',
-				'changelog'   => $this->github_response['body'] ?? 'Pembaruan otomatis dari GitHub release.',
+				'changelog'   => 'Versi terbaru tersedia dari repository GitHub.',
 			),
-			'download_link'     => $download_url,
+			'download_link'     => $this->download_url,
 		);
 
 		return (object) $plugin;
 	}
 
 	/**
-	 * Move unzipped folder to proper plugin directory name.
+	 * Add "Cek Update" link to plugin list table.
 	 */
-	public function after_install( $response, $hook_extra, $result ) {
-		global $wp_filesystem;
-		$install_directory = plugin_dir_path( $this->file );
-		$wp_filesystem->move( $result['destination'], $install_directory );
-		$result['destination'] = $install_directory;
-		return $result;
+	public function add_action_links( $links ) {
+		$check_url = wp_nonce_url( admin_url( 'plugins.php?wah_check_update=1' ), 'wah_check_update_nonce' );
+		$check_link = '<a href="' . esc_url( $check_url ) . '" style="color:#0284c7; font-weight:bold;">🔄 Cek Update Sekarang</a>';
+		array_unshift( $links, $check_link );
+		return $links;
+	}
+
+	/**
+	 * Handle manual force check click to clear WP update transient cache immediately.
+	 */
+	public function handle_force_check() {
+		if ( isset( $_GET['wah_check_update'] ) && check_admin_referer( 'wah_check_update_nonce' ) ) {
+			// Delete WP plugin update cache
+			delete_site_transient( 'update_plugins' );
+			wp_clean_plugins_cache();
+
+			// Force fresh check
+			wp_update_plugins();
+
+			wp_safe_redirect( admin_url( 'plugins.php?wah_updated_checked=1' ) );
+			exit;
+		}
 	}
 }
