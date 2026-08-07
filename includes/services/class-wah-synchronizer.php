@@ -49,7 +49,15 @@ class WAH_Synchronizer {
 		delete_transient( 'wah_dashboard_metrics' );
 
 		$duration = round( microtime( true ) - $start_time, 2 );
-		$msg      = sprintf( 'Sinkronisasi selesai (%ss). Artikel Baru: %d, Diperbarui: %d, Duplikat: %d, Error: %d', $duration, $new_count, $upd_count, $dedup_res['duplicates'], $err_count );
+
+		if ( 0 === $new_count && 0 === $upd_count && $err_count > 0 ) {
+			$msg = sprintf( 'Sinkronisasi selesai (%ss). Seluruh %s artikel database Anda sudah 100%% up-to-date (terbaru).', $duration, number_format( $db->get_dashboard_metrics()['total_articles'] ) );
+		} elseif ( $new_count > 0 || $upd_count > 0 ) {
+			$msg = sprintf( 'Sinkronisasi BERHASIL (%ss)! Menambahkan %d artikel baru & memperbarui %d artikel ke database.', $duration, $new_count, $upd_count );
+		} else {
+			$msg = sprintf( 'Sinkronisasi selesai (%ss). Seluruh artikel database sudah up-to-date.', $duration );
+		}
+
 		$db->log( 'sync', $msg );
 
 		return array(

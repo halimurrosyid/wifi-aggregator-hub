@@ -3,7 +3,7 @@
  * Plugin Name: WiFi Aggregator Hub
  * Plugin URI: https://github.com/halimurrosyid/wifi-aggregator-hub
  * Description: Mesin indeks dan agregator pencarian provider internet Indonesia dari berbagai feed website (RSS/Atom/Sitemap) dengan pengelompokan wilayah & provider, deduplikasi otomatis, dan landing page SEO.
- * Version: 1.0.25
+ * Version: 1.0.26
  * Author: Mujaddid Halimurrosyid Ajid WP
  * Author URI: https://indahweb.com
  * Text Domain: wifi-aggregator-hub
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WAH_VERSION', '1.0.25' );
+define( 'WAH_VERSION', '1.0.26' );
 define( 'WAH_PLUGIN_FILE', __FILE__ );
 define( 'WAH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WAH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
