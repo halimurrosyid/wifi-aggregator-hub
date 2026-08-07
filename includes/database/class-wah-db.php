@@ -206,8 +206,13 @@ class WAH_DB {
 		}
 
 		if ( ! empty( $args['area_id'] ) ) {
-			$where[]  = 'area_id = %d';
-			$params[] = intval( $args['area_id'] );
+			if ( ! empty( $args['include_general'] ) ) {
+				$where[]  = '(area_id = %d OR area_id = 0)';
+				$params[] = intval( $args['area_id'] );
+			} else {
+				$where[]  = 'area_id = %d';
+				$params[] = intval( $args['area_id'] );
+			}
 		}
 
 		if ( ! empty( $args['provider_id'] ) ) {

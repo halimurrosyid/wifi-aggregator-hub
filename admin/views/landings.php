@@ -30,7 +30,7 @@ $areas = $db->get_areas();
 				<?php if ( empty( $areas ) ) : ?>
 					<tr><td colspan="4">Belum ada landing page area yang dibuat.</td></tr>
 				<?php else : foreach ( $areas as $area ) :
-					$count = count( $db->get_articles( array( 'area_id' => $area['id'], 'status' => 'active' ) ) );
+					$count = count( $db->get_articles( array( 'area_id' => $area['id'], 'include_general' => true, 'status' => 'active' ) ) );
 					$url   = home_url( '/wifi-' . $area['slug'] . '/' );
 				?>
 					<tr>
