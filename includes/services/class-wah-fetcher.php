@@ -1,6 +1,7 @@
 <?php
 /**
- * Feed & XML Sitemap Fetcher and Parser.
+ * Advanced Multi-Page Feed & Recursive XML Sitemap Index Fetcher.
+ * Capable of extracting hundreds to thousands of articles per domain.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,195 +11,195 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WAH_Fetcher {
 
 	/**
-	 * Fetch articles from feed URL or sitemap URL fallback.
-	 *
-	 * @param array $feed_row Feed record array from DB.
-	 * @return array Array of extracted article data arrays or WP_Error.
+	 * Fetch ALL available articles from RSS feed (multi-page) and XML Sitemaps.
 	 */
 	public static function fetch( $feed_row ) {
-		$articles = array();
-		$feed_url = $feed_row['feed_url'];
+		$raw_items = array();
+		$feed_url  = $feed_row['feed_url'];
+		$seen_urls = array();
 
-		// Attempt RSS/Atom parsing first
-		$rss_items = self::fetch_rss( $feed_url );
-
+		// 1. Fetch Deep Paged RSS (Pages 1 to 25 = up to 250+ articles)
+		$rss_items = self::fetch_rss_paged( $feed_url, 25 );
 		if ( ! is_wp_error( $rss_items ) && ! empty( $rss_items ) ) {
 			foreach ( $rss_items as $item ) {
-				$article = self::format_item( $item, $feed_row );
-				if ( $article ) {
-					$articles[] = $article;
+				if ( ! empty( $item['url'] ) && ! isset( $seen_urls[ $item['url'] ] ) ) {
+					$seen_urls[ $item['url'] ] = true;
+					$raw_items[]               = $item;
 				}
 			}
-			return $articles;
 		}
 
-		// Fallback to XML Sitemap if available
-		if ( ! empty( $feed_row['sitemap_url'] ) ) {
-			$sitemap_items = self::fetch_sitemap( $feed_row['sitemap_url'] );
+		// 2. Fetch Deep XML Sitemap & Sitemap Index if provided or probe /sitemap.xml
+		$sitemap_url = ! empty( $feed_row['sitemap_url'] ) ? $feed_row['sitemap_url'] : self::probe_sitemap_url( $feed_url );
+		if ( ! empty( $sitemap_url ) ) {
+			$sitemap_items = self::fetch_sitemap( $sitemap_url );
 			if ( ! is_wp_error( $sitemap_items ) && ! empty( $sitemap_items ) ) {
 				foreach ( $sitemap_items as $item ) {
-					$article = self::format_item( $item, $feed_row );
-					if ( $article ) {
-						$articles[] = $article;
+					if ( ! empty( $item['url'] ) && ! isset( $seen_urls[ $item['url'] ] ) ) {
+						$seen_urls[ $item['url'] ] = true;
+						$raw_items[]               = $item;
 					}
 				}
-				return $articles;
 			}
 		}
 
-		if ( is_wp_error( $rss_items ) ) {
-			return $rss_items;
+		if ( empty( $raw_items ) ) {
+			return new WP_Error( 'feed_empty', __( 'Tidak ada artikel yang ditemukan dari feed/sitemap ini.', 'wifi-aggregator-hub' ) );
 		}
 
-		return new WP_Error( 'feed_empty', __( 'Tidak ada artikel yang ditemukan dari feed/sitemap ini.', 'wifi-aggregator-hub' ) );
+		// 3. Format raw items into standardized articles
+		$articles = array();
+		foreach ( $raw_items as $raw ) {
+			$formatted = self::format_item( $raw, $feed_row );
+			if ( $formatted ) {
+				$articles[] = $formatted;
+			}
+		}
+
+		return $articles;
 	}
 
 	/**
-	 * Parse RSS/Atom feed using SimplePie / fetch_feed or wp_remote_get.
+	 * Probe sitemap URL if not explicitly defined.
 	 */
-	private static function fetch_rss( $url ) {
+	private static function probe_sitemap_url( $feed_url ) {
+		$host = wp_parse_url( $feed_url, PHP_URL_SCHEME ) . '://' . wp_parse_url( $feed_url, PHP_URL_HOST );
+		return $host . '/sitemap_index.xml';
+	}
+
+	/**
+	 * Fetch multi-page RSS feed (/feed/?paged=1..N).
+	 */
+	private static function fetch_rss_paged( $base_url, $max_pages = 25 ) {
 		if ( ! function_exists( 'fetch_feed' ) ) {
 			require_once ABSPATH . WPINC . '/feed.php';
 		}
 
-		$rss = fetch_feed( $url );
+		$all_items = array();
+		$clean_url = preg_replace( '/\?.*$/', '', $base_url );
+		$clean_url = rtrim( $clean_url, '/' );
 
-		if ( is_wp_error( $rss ) ) {
-			// Try manual fallback with wp_remote_get
-			return self::fetch_rss_fallback( $url );
-		}
+		for ( $page = 1; $page <= $max_pages; $page++ ) {
+			$page_url = ( 1 === $page ) ? $base_url : $clean_url . '/?paged=' . $page;
+			$rss      = fetch_feed( $page_url );
 
-		$maxitems  = $rss->get_item_quantity( 50 );
-		$rss_items = $rss->get_items( 0, $maxitems );
-
-		$results = array();
-		foreach ( $rss_items as $item ) {
-			$title   = $item->get_title();
-			$link    = $item->get_permalink();
-			$date    = $item->get_date( 'Y-m-d H:i:s' );
-			$excerpt = $item->get_description();
-
-			// Enclosure / media image extraction
-			$image = '';
-			if ( $enclosure = $item->get_enclosure() ) {
-				$image = $enclosure->get_link();
+			if ( is_wp_error( $rss ) ) {
+				break;
 			}
 
-			// Categories / tags
-			$cats       = array();
-			$categories = $item->get_categories();
-			if ( is_array( $categories ) ) {
-				foreach ( $categories as $cat ) {
-					$cats[] = $cat->get_label();
+			$maxitems  = $rss->get_item_quantity( 50 );
+			$rss_items = $rss->get_items( 0, $maxitems );
+
+			if ( empty( $rss_items ) ) {
+				break;
+			}
+
+			$page_count = 0;
+			foreach ( $rss_items as $item ) {
+				$title   = $item->get_title();
+				$link    = $item->get_permalink();
+				$date    = $item->get_date( 'Y-m-d H:i:s' );
+				$excerpt = $item->get_description();
+
+				$image = '';
+				if ( $enclosure = $item->get_enclosure() ) {
+					$image = $enclosure->get_link();
+				}
+
+				$cats       = array();
+				$categories = $item->get_categories();
+				if ( is_array( $categories ) ) {
+					foreach ( $categories as $cat ) {
+						$cats[] = $cat->get_label();
+					}
+				}
+
+				$all_items[] = array(
+					'title'          => $title,
+					'url'            => $link,
+					'publish_date'   => $date ? $date : current_time( 'mysql' ),
+					'excerpt'        => $excerpt,
+					'featured_image' => $image,
+					'category'       => implode( ', ', $cats ),
+					'tags'           => implode( ', ', $cats ),
+				);
+				$page_count++;
+			}
+
+			if ( $page_count < 5 ) {
+				break; // Stop if less than 5 items returned
+			}
+		}
+
+		return $all_items;
+	}
+
+	/**
+	 * Recursive Sitemap XML & Sitemap Index parser.
+	 */
+	private static function fetch_sitemap( $url, $depth = 0 ) {
+		if ( $depth > 3 ) {
+			return array();
+		}
+
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout'    => 15,
+				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) WiFiAggregatorHub/1.0',
+			)
+		);
+
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return array();
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		if ( empty( $body ) ) {
+			return array();
+		}
+
+		libxml_use_internal_errors( true );
+		$xml = simplexml_load_string( $body );
+		if ( ! $xml ) {
+			return array();
+		}
+
+		$results = array();
+
+		// Handle Sitemap Index (<sitemapindex><sitemap><loc>...</loc></sitemap></sitemapindex>)
+		if ( isset( $xml->sitemap ) ) {
+			foreach ( $xml->sitemap as $sub_sitemap ) {
+				$sub_loc = (string) $sub_sitemap->loc;
+				// Filter post/article sitemaps only
+				if ( false !== stripos( $sub_loc, 'post' ) || false !== stripos( $sub_loc, 'article' ) || false !== stripos( $sub_loc, 'page' ) ) {
+					$sub_results = self::fetch_sitemap( $sub_loc, $depth + 1 );
+					$results     = array_merge( $results, $sub_results );
 				}
 			}
-
-			$results[] = array(
-				'title'          => $title,
-				'url'            => $link,
-				'publish_date'   => $date ? $date : current_time( 'mysql' ),
-				'excerpt'        => $excerpt,
-				'featured_image' => $image,
-				'category'       => implode( ', ', $cats ),
-				'tags'           => implode( ', ', $cats ),
-			);
 		}
 
-		return $results;
-	}
-
-	/**
-	 * Manual RSS fallback using wp_remote_get & SimpleXMLElement.
-	 */
-	private static function fetch_rss_fallback( $url ) {
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'    => 15,
-				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) WiFiAggregatorHub/1.0',
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		$body = wp_remote_retrieve_body( $response );
-		if ( empty( $body ) ) {
-			return new WP_Error( 'http_empty', 'Response body is empty.' );
-		}
-
-		libxml_use_internal_errors( true );
-		$xml = simplexml_load_string( $body );
-		if ( ! $xml ) {
-			return new WP_Error( 'xml_invalid', 'Gagal memparsing XML feed.' );
-		}
-
-		$results = array();
-		// RSS 2.0
-		if ( isset( $xml->channel->item ) ) {
-			foreach ( $xml->channel->item as $item ) {
-				$results[] = array(
-					'title'          => (string) $item->title,
-					'url'            => (string) $item->link,
-					'publish_date'   => isset( $item->pubDate ) ? date( 'Y-m-d H:i:s', strtotime( (string) $item->pubDate ) ) : current_time( 'mysql' ),
-					'excerpt'        => (string) ($item->description ?? ''),
-					'featured_image' => '',
-					'category'       => '',
-					'tags'           => '',
-				);
-			}
-		}
-
-		return $results;
-	}
-
-	/**
-	 * Sitemap XML parser fallback.
-	 */
-	private static function fetch_sitemap( $url ) {
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'    => 15,
-				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) WiFiAggregatorHub/1.0',
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		$body = wp_remote_retrieve_body( $response );
-		if ( empty( $body ) ) {
-			return new WP_Error( 'sitemap_empty', 'Sitemap body empty.' );
-		}
-
-		libxml_use_internal_errors( true );
-		$xml = simplexml_load_string( $body );
-		if ( ! $xml ) {
-			return new WP_Error( 'sitemap_invalid', 'Gagal memparsing Sitemap XML.' );
-		}
-
-		$results = array();
+		// Handle URL entries (<urlset><url><loc>...</loc></url></urlset>)
 		if ( isset( $xml->url ) ) {
 			foreach ( $xml->url as $url_node ) {
 				$loc     = (string) $url_node->loc;
 				$lastmod = isset( $url_node->lastmod ) ? date( 'Y-m-d H:i:s', strtotime( (string) $url_node->lastmod ) ) : current_time( 'mysql' );
 
-				// Clean title from URL slug as fallback
+				// Derive title from URL path slug
 				$slug       = basename( parse_url( $loc, PHP_URL_PATH ) );
 				$clean_name = ucwords( str_replace( array( '-', '_' ), ' ', $slug ) );
 
-				$results[] = array(
-					'title'          => $clean_name,
-					'url'            => $loc,
-					'publish_date'   => $lastmod,
-					'excerpt'        => $clean_name,
-					'featured_image' => '',
-					'category'       => '',
-					'tags'           => '',
-				);
+				if ( ! empty( $loc ) && strlen( $slug ) > 3 ) {
+					$results[] = array(
+						'title'          => $clean_name,
+						'url'            => $loc,
+						'publish_date'   => $lastmod,
+						'excerpt'        => $clean_name,
+						'featured_image' => '',
+						'category'       => '',
+						'tags'           => '',
+					);
+				}
 			}
 		}
 
@@ -221,8 +222,8 @@ class WAH_Fetcher {
 		$area_id     = WAH_Area_Detector::detect( $full_text );
 
 		// Generate WhatsApp / CTA URL if domain offers parameter
-		$cta_url  = $raw['url'];
-		$wa_num   = '';
+		$cta_url = $raw['url'];
+		$wa_num  = '';
 		if ( preg_match( '/(?:wa\.me|api\.whatsapp\.com\/send\?phone=)(\d+)/i', $raw['excerpt'], $matches ) ) {
 			$wa_num = $matches[1];
 		}

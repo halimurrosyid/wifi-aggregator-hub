@@ -102,7 +102,7 @@ $cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', 
 	<!-- Recent Indexed Articles Table -->
 	<div class="wah-card-panel margin-top-20">
 		<div class="wah-panel-header">
-			<h3><span class="dashicons dashicons-admin-post"></span> Daftar Artikel Terindeks (10 Terbaru)</h3>
+			<h3><span class="dashicons dashicons-admin-post"></span> Daftar Artikel Terindeks Terbaru (Top 20)</h3>
 		</div>
 		<table class="widefat fixed striped">
 			<thead>
@@ -117,7 +117,7 @@ $cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', 
 			</thead>
 			<tbody>
 				<?php
-				$recent_articles = $db->get_articles( array( 'limit' => 10 ) );
+				$recent_articles = $db->get_articles( array( 'limit' => 20 ) );
 				if ( empty( $recent_articles ) ) :
 				?>
 					<tr><td colspan="6">Belum ada artikel terindeks. Silakan tambahkan feed lalu klik Sync.</td></tr>
