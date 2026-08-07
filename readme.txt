@@ -5,7 +5,7 @@ Tags: wifi, aggregator, isp, provider, search engine, seo, indonesia
 Requires at least: 5.8
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,12 @@ WiFi Aggregator Hub adalah plugin WordPress profesional yang dirancang khusus un
 
 == Changelog ==
 
+= 1.0.11 =
+* Feature: Paginasi Tabel Admin Per Page View (Menambahkan kontrol paginasi per halaman pada Dashboard, Landing Pages, Area Manager, dan System Logs agar tabel rapi dan tidak memanjang ke bawah).
+* Feature: Grafik Analitik Distribusi Provider (Menambahkan diagram batang visual distribusi artikel per provider ISP).
+
 = 1.0.10 =
-* Feature: Universal Sub-Sitemap Index Crawling (Sistem secara otomatis membaca seluruh sub-sitemap di bawah sitemap_index.xml induk secara rekursif).
+* Feature: Universal Sub-Sitemap Index Crawling.
 
 = 1.0.9 =
 * Feature: Multi-Page RSS Pagination & Deep Sitemap Index Fetcher.

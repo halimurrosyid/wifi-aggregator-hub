@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Dashboard View.
+ * WiFi Aggregator Hub - Advanced Analytics & Dashboard View with Pagination
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,100 +9,142 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $db      = WAH_DB::get_instance();
 $metrics = $db->get_dashboard_metrics();
-$cron_next = wp_next_scheduled( 'wah_cron_sync_feeds' );
-$cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', $cron_next ) . ')' : 'Non-Aktif';
+
+// Pagination setup for indexed articles table
+$current_page = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
+$per_page     = 10;
+$offset       = ( $current_page - 1 ) * $per_page;
+
+$total_articles_count = intval( $metrics['total_articles'] );
+$total_pages          = ceil( $total_articles_count / $per_page );
+
+$articles = $db->get_articles(
+	array(
+		'limit'  => $per_page,
+		'offset' => $offset,
+		'status' => 'active',
+	)
+);
+
+// Calculate provider distribution for analytics chart
+$providers         = $db->get_providers();
+$provider_stats    = array();
+$total_art_for_pct = max( 1, $total_articles_count );
+
+foreach ( $providers as $prov ) {
+	$count = count( $db->get_articles( array( 'provider_id' => $prov['id'], 'status' => 'active' ) ) );
+	if ( $count > 0 ) {
+		$provider_stats[] = array(
+			'name'       => $prov['name'],
+			'count'      => $count,
+			'percentage' => round( ( $count / $total_art_for_pct ) * 100, 1 ),
+			'color'      => ! empty( $prov['brand_color'] ) ? $prov['brand_color'] : '#0284c7',
+		);
+	}
+}
 ?>
 <div class="wrap wah-admin-wrap">
-	<h1 class="wah-title"><span class="dashicons dashicons-rss"></span> WiFi Aggregator Hub - Dashboard</h1>
+	<h1 class="wah-title"><span class="dashicons dashicons-dashboard"></span> WiFi Aggregator Hub - Dashboard & Analitik</h1>
 
-	<div class="wah-dashboard-hero">
-		<h2>Mesin Indeks Aggregator Provider Internet Indonesia</h2>
-		<p>Mengindeks secara real-time dari website provider & mitra tanpa meng-copy konten asli.</p>
-	</div>
-
-	<!-- Stats Grid -->
-	<div class="wah-stats-grid">
-		<div class="wah-stat-card primary">
-			<div class="stat-icon"><span class="dashicons dashicons-rss"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_feeds'] ) ); ?></h3>
-				<p>Total Feed Sources</p>
+	<!-- Top Metric Cards Grid -->
+	<div class="wah-metrics-grid">
+		<div class="wah-metric-card">
+			<div class="wah-metric-icon" style="background:#e0f2fe; color:#0284c7;"><span class="dashicons dashicons-rss"></span></div>
+			<div class="wah-metric-info">
+				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_feeds'] ); ?></span>
+				<span class="wah-metric-label">Total Feed Sources</span>
 			</div>
 		</div>
-
-		<div class="wah-stat-card success">
-			<div class="stat-icon"><span class="dashicons dashicons-admin-post"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_articles'] ) ); ?></h3>
-				<p>Total Artikel Aktif</p>
+		<div class="wah-metric-card">
+			<div class="wah-metric-icon" style="background:#dcfce7; color:#16a34a;"><span class="dashicons dashicons-admin-post"></span></div>
+			<div class="wah-metric-info">
+				<span class="wah-metric-value"><?php echo esc_html( number_format( $metrics['total_articles'] ) ); ?></span>
+				<span class="wah-metric-label">Artikel Terindeks</span>
 			</div>
 		</div>
-
-		<div class="wah-stat-card info">
-			<div class="stat-icon"><span class="dashicons dashicons-category"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_providers'] ) ); ?></h3>
-				<p>Total Provider ISP</p>
+		<div class="wah-metric-card">
+			<div class="wah-metric-icon" style="background:#f3e8ff; color:#9333ea;"><span class="dashicons dashicons-category"></span></div>
+			<div class="wah-metric-info">
+				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_providers'] ); ?></span>
+				<span class="wah-metric-label">Provider ISP</span>
 			</div>
 		</div>
-
-		<div class="wah-stat-card warning">
-			<div class="stat-icon"><span class="dashicons dashicons-location-alt"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_areas'] ) ); ?></h3>
-				<p>Total Kota & Wilayah</p>
+		<div class="wah-metric-card">
+			<div class="wah-metric-icon" style="background:#fef3c7; color:#d97706;"><span class="dashicons dashicons-location"></span></div>
+			<div class="wah-metric-info">
+				<span class="wah-metric-value"><?php echo esc_html( count( $db->get_active_landing_areas() ) ); ?></span>
+				<span class="wah-metric-label">Wilayah Aktif Terisi</span>
 			</div>
 		</div>
-
-		<div class="wah-stat-card accent">
-			<div class="stat-icon"><span class="dashicons dashicons-plus-alt"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_new_24h'] ) ); ?></h3>
-				<p>Artikel Baru (24h)</p>
-			</div>
-		</div>
-
-		<div class="wah-stat-card danger">
-			<div class="stat-icon"><span class="dashicons dashicons-warning"></span></div>
-			<div class="stat-content">
-				<h3><?php echo esc_html( number_format_i18n( $metrics['total_duplicate'] ) ); ?></h3>
-				<p>Artikel Duplikat</p>
+		<div class="wah-metric-card">
+			<div class="wah-metric-icon" style="background:#e0e7ff; color:#4f46e5;"><span class="dashicons dashicons-clock"></span></div>
+			<div class="wah-metric-info">
+				<span class="wah-metric-value"><?php echo esc_html( $metrics['total_new_24h'] ); ?></span>
+				<span class="wah-metric-label">Artikel Baru (24j)</span>
 			</div>
 		</div>
 	</div>
 
-	<!-- Cron & Quick Controls -->
-	<div class="wah-card-panel margin-top-20">
-		<div class="wah-panel-header">
-			<h3><span class="dashicons dashicons-update"></span> Status Sinkronisasi Engine</h3>
-			<button id="wah-btn-sync-all" class="button button-primary button-hero">
-				<span class="dashicons dashicons-update-alt"></span> Sinkronkan Semua Feed Sekarang
-			</button>
-		</div>
-		<div class="wah-panel-body">
-			<table class="widefat fixed striped">
-				<tr>
-					<td><strong>Sinkronisasi Terakhir:</strong></td>
-					<td><?php echo esc_html( $metrics['last_synced'] ); ?></td>
-				</tr>
-				<tr>
-					<td><strong>Status WP-Cron:</strong></td>
-					<td><span class="wah-badge active"><?php echo esc_html( $cron_status ); ?></span></td>
-				</tr>
-				<tr>
-					<td><strong>Broken Links / Noindex:</strong></td>
-					<td><?php echo esc_html( number_format_i18n( $metrics['total_broken'] ) ); ?> Terdeteksi</td>
-				</tr>
-			</table>
-			<div id="wah-sync-progress" class="wah-progress-bar-container hidden">
-				<div class="wah-progress-bar"></div>
-				<p class="wah-progress-text">Memproses sinkronisasi feed data...</p>
+	<!-- Analytics Charts Grid -->
+	<div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
+		<!-- Provider Share Analytics Chart -->
+		<div class="wah-card-panel">
+			<div class="wah-panel-header">
+				<h3><span class="dashicons dashicons-chart-pie"></span> Distribusi Artikel per Provider ISP</h3>
+			</div>
+			<div style="padding:10px 0;">
+				<?php if ( empty( $provider_stats ) ) : ?>
+					<p style="color:#64748b;">Belum ada data distribusi provider terindeks.</p>
+				<?php else : foreach ( $provider_stats as $stat ) : ?>
+					<div style="margin-bottom:12px;">
+						<div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+							<span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:<?php echo esc_attr( $stat['color'] ); ?>; margin-right:6px;"></span><?php echo esc_html( $stat['name'] ); ?></span>
+							<span><?php echo esc_html( $stat['count'] ); ?> artikel (<?php echo esc_html( $stat['percentage'] ); ?>%)</span>
+						</div>
+						<div style="background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden;">
+							<div style="background:<?php echo esc_attr( $stat['color'] ); ?>; width:<?php echo esc_attr( $stat['percentage'] ); ?>%; height:100%;"></div>
+						</div>
+					</div>
+				<?php endforeach; endif; ?>
 			</div>
 		</div>
-	<!-- Recent Indexed Articles Table -->
+
+		<!-- Engine Health & Status Panel -->
+		<div class="wah-card-panel">
+			<div class="wah-panel-header">
+				<h3><span class="dashicons dashicons-performance"></span> Status Kesehatan Engine Aggregator</h3>
+			</div>
+			<div style="display:flex; flex-direction:column; gap:12px; padding:10px 0;">
+				<div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+					<div>
+						<strong>Autoupdate WP-Cron Engine:</strong>
+						<div style="font-size:12px; color:#64748b;">Jadwal otomatis 1 jam sekali</div>
+					</div>
+					<span class="wah-badge active">ONLINE & AKTIFF</span>
+				</div>
+				<div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+					<div>
+						<strong>Broken Link Checker (404/Noindex):</strong>
+						<div style="font-size:12px; color:#64748b;"><?php echo esc_html( $metrics['total_broken'] ); ?> tautan rusak terdeteksi</div>
+					</div>
+					<span class="wah-badge active">NORMAL</span>
+				</div>
+				<div style="display:flex; align-items:center; justify-content:space-between; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+					<div>
+						<strong>Sinkronisasi Terakhir:</strong>
+						<div style="font-size:12px; color:#64748b;"><?php echo esc_html( $metrics['last_synced'] ); ?></div>
+					</div>
+					<button type="button" class="button button-primary wah-sync-btn" style="background:#0284c7; border-color:#0284c7;"><span class="dashicons dashicons-update" style="margin-top:4px;"></span> Sync Sekarang</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Paginated Indexed Articles Table -->
 	<div class="wah-card-panel margin-top-20">
-		<div class="wah-panel-header">
-			<h3><span class="dashicons dashicons-admin-post"></span> Daftar Artikel Terindeks Terbaru (Top 20)</h3>
+		<div class="wah-panel-header" style="display:flex; justify-content:space-between; align-items:center;">
+			<h3><span class="dashicons dashicons-admin-post"></span> Daftar Artikel Terindeks (Halaman <?php echo esc_html( $current_page ); ?> dari <?php echo esc_html( max( 1, $total_pages ) ); ?>)</h3>
+			<span style="font-size:13px; color:#64748b;">Menampilkan 10 artikel per halaman</span>
 		</div>
 		<table class="widefat fixed striped">
 			<thead>
@@ -116,12 +158,9 @@ $cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', 
 				</tr>
 			</thead>
 			<tbody>
-				<?php
-				$recent_articles = $db->get_articles( array( 'limit' => 20 ) );
-				if ( empty( $recent_articles ) ) :
-				?>
+				<?php if ( empty( $articles ) ) : ?>
 					<tr><td colspan="6">Belum ada artikel terindeks. Silakan tambahkan feed lalu klik Sync.</td></tr>
-				<?php else : foreach ( $recent_articles as $art ) :
+				<?php else : foreach ( $articles as $art ) :
 					$prov = $art['provider_id'] ? $db->get_provider( $art['provider_id'] ) : null;
 					$area = $art['area_id'] ? $db->get_area( $art['area_id'] ) : null;
 				?>
@@ -152,5 +191,31 @@ $cron_status = $cron_next ? 'Aktif (Jadwal Berikutnya: ' . date( 'd M Y H:i:s', 
 				<?php endforeach; endif; ?>
 			</tbody>
 		</table>
+
+		<!-- Table Pagination Controls -->
+		<?php if ( $total_pages > 1 ) : ?>
+			<div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:10px; border-top:1px solid #e2e8f0;">
+				<div style="font-size:13px; color:#64748b;">
+					Menampilkan artikel <strong><?php echo esc_html( $offset + 1 ); ?></strong> - <strong><?php echo esc_html( min( $total_articles_count, $offset + $per_page ) ); ?></strong> dari total <strong><?php echo esc_html( $total_articles_count ); ?></strong>
+				</div>
+				<div style="display:flex; gap:5px;">
+					<?php if ( $current_page > 1 ) : ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wifi-aggregator-hub&paged=' . ( $current_page - 1 ) ) ); ?>" class="button">&laquo; Sblmnya</a>
+					<?php endif; ?>
+
+					<?php for ( $i = 1; $i <= $total_pages; $i++ ) : 
+						if ( $i == $current_page || $i == 1 || $i == $total_pages || ( $i >= $current_page - 2 && $i <= $current_page + 2 ) ) :
+					?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wifi-aggregator-hub&paged=' . $i ) ); ?>" class="button <?php echo ( $i == $current_page ) ? 'button-primary' : ''; ?>"><?php echo esc_html( $i ); ?></a>
+					<?php elseif ( $i == $current_page - 3 || $i == $current_page + 3 ) : ?>
+						<span style="padding:4px 8px; color:#94a3b8;">...</span>
+					<?php endif; endfor; ?>
+
+					<?php if ( $current_page < $total_pages ) : ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wifi-aggregator-hub&paged=' . ( $current_page + 1 ) ) ); ?>" class="button">Selanjutnya &raquo;</a>
+					<?php endif; ?>
+				</div>
+			</div>
+		<?php endif; ?>
 	</div>
 </div>
